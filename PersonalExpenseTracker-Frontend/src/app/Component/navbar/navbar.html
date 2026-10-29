@@ -1,0 +1,46 @@
+<nav class="navbar navbar-expand-lg spend-navbar">
+    <div class="container">
+
+        <!-- Brand Logo -->
+        <a class="navbar-brand brand-logo" routerLink="/">
+            <span class="brand-icon">₹</span>
+            <span>Spend<span class="brand-highlight">Wise</span></span>
+        </a>
+
+        <!-- Mobile Menu Button -->
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar"
+            aria-controls="mainNavbar" aria-expanded="false" aria-label="Toggle navigation">
+
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <!-- Navbar Links -->
+        <div class="collapse navbar-collapse" id="mainNavbar">
+
+            <ul class="navbar-nav mx-auto mb-2 mb-lg-0">
+                <li class="nav-item">
+                    <a class="nav-link" routerLink="/home" routerLinkActive="active">
+                        Home
+                    </a>
+                </li>
+                <!-- <li class="nav-item">
+                    <a class="nav-link" routerLink="/dashboard" routerLinkActive="active">
+                        Dashboard
+                    </a>
+                </li> -->
+            </ul>
+
+            <!-- Login and Register -->
+            <div class="navbar-actions">
+                <a class="btn login-btn" routerLink="/login">
+                    Login
+                </a>
+
+                <a class="btn register-btn" routerLink="/register">
+                    Get Started <span>→</span>
+                </a>
+            </div>
+
+        </div>
+    </div>
+</nav>

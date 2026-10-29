@@ -1,0 +1,83 @@
+<app-navbar></app-navbar>
+<section class="hero">
+    <div class="container hero-inner">
+        <span class="eyebrow">💡 Personal finance, simplified</span>
+        <h1>
+            Track every rupee.<br>
+            Spend with <span class="highlight">confidence</span>.
+        </h1>
+        <p class="hero-sub">
+            Record income and expenses, organise them by category,
+            and see where your money really goes — all in one clean dashboard.
+        </p>
+
+        <div class="hero-actions">
+            <a routerLink="/register" class="btn-primary">Get Started Free</a>
+            <a routerLink="/login" class="btn-secondary">I already have an account</a>
+        </div>
+
+        <div class="hero-badge">
+            <span>✔ No credit card</span>
+            <span>✔ Setup in 30 seconds</span>
+            <span>✔ Secure JWT auth</span>
+        </div>
+    </div>
+</section>
+
+<!-- FEATURES -->
+<section class="features container">
+    <h2 class="section-title">Everything you need to manage money</h2>
+    <p class="section-sub">A focused set of tools — nothing more, nothing less.</p>
+
+    <!-- <div class="features-grid">
+        <div class="feature-card" *ngFor="let f of features">
+            <div class="feature-icon">{{ f.icon }}</div>
+            <h3>{{ f.title }}</h3>
+            <p>{{ f.text }}</p>
+        </div>
+    </div> -->
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="how">
+    <div class="container">
+        <h2 class="section-title light">How it works</h2>
+        <div class="steps">
+            <div class="step">
+                <div class="step-num">1</div>
+                <h3>Create account</h3>
+                <p>Sign up in seconds with your email.</p>
+            </div>
+            <div class="step">
+                <div class="step-num">2</div>
+                <h3>Add transactions</h3>
+                <p>Log income and expenses as they happen.</p>
+            </div>
+            <div class="step">
+                <div class="step-num">3</div>
+                <h3>See insights</h3>
+                <p>Watch your balance and category breakdown update live.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CTA -->
+<section class="cta">
+    <div class="container cta-inner">
+        <h2>Ready to take control of your money?</h2>
+        <p>Join today — it's free and takes less than a minute.</p>
+        <a routerLink="/register" class="btn-primary big">Create your account</a>
+    </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+    <div class="container footer-inner">
+        <div class="footer-brand">
+            <span class="brand-icon">💰</span>
+            <span>Expense Tracker</span>
+        </div>
+        <p class="footer-copy">© {{ 2025 }} Expense Tracker. Built with Angular & Spring Boot.</p>
+    </div>
+</footer>

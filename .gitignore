@@ -1,0 +1,63 @@
+# =========================
+# Angular / Node.js
+# =========================
+node_modules/
+dist/
+.angular/
+coverage/
+npm-debug.log*
+yarn-debug.log*
+pnpm-debug.log*
+# =========================
+# Java / Maven / Spring Boot
+# =========================
+target/
+*.class
+*.log
+hs_err_pid*
+# =========================
+# Environment variables and secrets
+# =========================
+.env
+.env.*
+!.env.example
+application-local.properties
+application-secret.properties
+application-prod.properties
+application.properties.local
+secrets.properties
+secrets.yml
+secrets.yaml
+*.pem
+*.key
+# =========================
+# Database backups
+# =========================
+*.sql
+*.sql.gz
+*.dump
+*.bak
+# Allow the assessment SQL file if it contains only safe queries
+!assessment.sql
+# =========================
+# IDE files
+# =========================
+.idea/
+*.iml
+.settings/
+.project
+.classpath
+.vscode/
+.metadata/
+# =========================
+# Operating system files
+# =========================
+.DS_Store
+Thumbs.db
+Desktop.ini
+# =========================
+# Temporary files
+# =========================
+*.tmp
+*.swp
+*.swo

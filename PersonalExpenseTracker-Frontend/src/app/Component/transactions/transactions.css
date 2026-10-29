@@ -1,0 +1,33 @@
+.container {
+    max-width: 1200px;
+    margin: 30px auto;
+}
+
+h2 {
+    color: #243b64;
+    font-weight: 700;
+}
+
+.card {
+    border: none;
+    border-radius: 12px;
+    box-shadow: 0 3px 12px rgba(0, 0, 0, 0.08);
+}
+
+label {
+    font-weight: 600;
+    margin-bottom: 6px;
+}
+
+.form-control,
+.form-select {
+    border-radius: 7px;
+}
+
+.table {
+    vertical-align: middle;
+}
+
+.btn {
+    border-radius: 6px;
+}

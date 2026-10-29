@@ -1,0 +1,307 @@
+<div class="dashboard-layout">
+
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <a routerLink="/dashboard" class="brand">
+            <span class="brand-icon">S</span>
+            SpendWise
+        </a>
+
+        <p class="menu-title">MAIN MENU</p>
+
+        <a routerLink="/dashboard" class="sidebar-link active">
+            <span>▦</span> Dashboard
+        </a>
+
+        <a (click)="Transaction()" class="sidebar-link">
+            <span>⇄</span> Transactions
+        </a>
+
+        <a (click)="Transaction()" class="sidebar-link">
+            <span>↗</span> Income
+        </a>
+
+        <a (click)="Transaction()" class="sidebar-link">
+            <span>↘</span> Expenses
+        </a>
+
+        <a (click)="Transaction()" class="sidebar-link">
+            <span>▤</span> Reports
+        </a>
+
+        <div class="sidebar-bottom">
+            <a (click)="logout()" class="sidebar-link">
+                <span>↪</span> Logout
+            </a>
+        </div>
+    </aside>
+
+    <!-- Main Dashboard -->
+    <main class="dashboard-main">
+
+        <!-- Header -->
+        <header class="dashboard-topbar">
+            <div>
+                <h2>My Dashboard</h2>
+
+                @if (loading) {
+                <p>Loading user details...</p>
+                } @else if (user) {
+                <div class="user-profile">
+                    <h3>Welcome back, {{ user.name }}!</h3>
+                    <p>Here's your financial overview.</p>
+                    <p>Email: {{ user.email }}</p>
+                    <p>User ID: {{ user.id }}</p>
+                </div>
+                }
+            </div>
+
+            <button class="btn btn-primary" (click)="Transaction()">
+                + Add Transaction
+            </button>
+        </header>
+
+        <!-- Error Message -->
+        @if (errorMessage) {
+        <div class="alert alert-danger mt-3">
+            {{ errorMessage }}
+
+            <button class="btn btn-sm btn-outline-danger ms-2" (click)="getDashboardSummary()">
+                Retry
+            </button>
+        </div>
+        }
+
+        <!-- Summary Cards -->
+        <section class="row g-4 mt-2">
+
+            <div class="col-md-4">
+                <div class="card border-0 shadow-sm rounded-4 p-3">
+                    <p class="text-secondary">Available Balance</p>
+
+                    @if (summaryLoading) {
+                    <h3>Loading...</h3>
+                    } @else {
+                    <h3 class="text-primary fw-bold">
+                        {{ availableBalance | currency:'INR':'symbol':'1.2-2' }}
+                    </h3>
+                    }
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card border-0 shadow-sm rounded-4 p-3">
+                    <p class="text-secondary">Total Income</p>
+
+                    @if (summaryLoading) {
+                    <h3>Loading...</h3>
+                    } @else {
+                    <h3 class="text-success fw-bold">
+                        {{ totalIncome | currency:'INR':'symbol':'1.2-2' }}
+                    </h3>
+                    }
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card border-0 shadow-sm rounded-4 p-3">
+                    <p class="text-secondary">Total Expenses</p>
+
+                    @if (summaryLoading) {
+                    <h3>Loading...</h3>
+                    } @else {
+                    <h3 class="text-danger fw-bold">
+                        {{ totalExpenses | currency:'INR':'symbol':'1.2-2' }}
+                    </h3>
+                    }
+                </div>
+            </div>
+
+        </section>
+
+        <!-- Filters -->
+        <section class="card border-0 shadow-sm rounded-4 p-4 mt-4">
+
+            <h5 class="fw-bold">Filter Transactions</h5>
+
+            <div class="row g-3 mt-1">
+
+                <!-- Category Filter -->
+                <div class="col-md-3">
+                    <label for="categoryFilter" class="form-label">
+                        Category
+                    </label>
+
+                    <select id="categoryFilter" class="form-select" [value]="selectedCategory"
+                        (change)="selectedCategory = $any($event.target).value">
+
+                        <option value="">All Categories</option>
+
+                        @for (category of categories; track category) {
+                        <option [value]="category">
+                            {{ category }}
+                        </option>
+                        }
+                    </select>
+                </div>
+
+                <!-- Type Filter -->
+                <div class="col-md-3">
+                    <label for="typeFilter" class="form-label">
+                        Transaction Type
+                    </label>
+
+                    <select id="typeFilter" class="form-select" [value]="selectedType"
+                        (change)="selectedType = $any($event.target).value">
+
+                        <option value="">All Types</option>
+                        <option value="INCOME">Income</option>
+                        <option value="EXPENSE">Expense</option>
+                    </select>
+                </div>
+
+                <!-- Start Date -->
+                <div class="col-md-3">
+                    <label for="startDate" class="form-label">
+                        From Date
+                    </label>
+
+                    <input type="date" id="startDate" class="form-control" [value]="startDate"
+                        (change)="startDate = $any($event.target).value">
+                </div>
+
+                <!-- End Date -->
+                <div class="col-md-3">
+                    <label for="endDate" class="form-label">
+                        To Date
+                    </label>
+
+                    <input type="date" id="endDate" class="form-control" [value]="endDate"
+                        (change)="endDate = $any($event.target).value">
+                </div>
+
+            </div>
+
+            <div class="d-flex gap-2 flex-wrap mt-3">
+
+                <button class="btn btn-primary" [disabled]="summaryLoading" (click)="applyFilters()">
+                    Apply Filters
+                </button>
+
+                <button class="btn btn-outline-secondary" [disabled]="summaryLoading" (click)="clearFilters()">
+                    Clear Filters
+                </button>
+
+            </div>
+
+        </section>
+
+        <!-- Quick Actions -->
+        <section class="card border-0 shadow-sm rounded-4 p-4 mt-4">
+
+            <h5 class="fw-bold">Quick Actions</h5>
+
+            <div class="d-flex gap-3 flex-wrap mt-3">
+
+                <button class="btn btn-outline-primary" (click)="Transaction()">
+                    Add Income
+                </button>
+
+                <button class="btn btn-outline-danger" (click)="Transaction()">
+                    Add Expense
+                </button>
+
+                <button class="btn btn-outline-secondary" (click)="Transaction()">
+                    View Transactions
+                </button>
+
+            </div>
+        </section>
+
+        <!-- Recent Transactions -->
+        <section class="card border-0 shadow-sm rounded-4 p-4 mt-4">
+
+            <div class="d-flex justify-content-between align-items-center
+                        flex-wrap gap-2 mb-3">
+
+                <div>
+                    <h5 class="fw-bold mb-1">Recent Transactions</h5>
+                    <p class="text-secondary mb-0">
+                        Transactions matching your selected filters
+                    </p>
+                </div>
+
+                <button class="btn btn-sm btn-outline-primary" (click)="Transaction()">
+                    View All
+                </button>
+
+            </div>
+
+            @if (summaryLoading) {
+            <p>Loading transactions...</p>
+            } @else if (transactions.length === 0) {
+            <p class="text-secondary">
+                No transactions found. Try changing the filters or add
+                your first transaction.
+            </p>
+            } @else {
+
+            <div class="table-responsive">
+
+                <table class="table table-hover align-middle">
+
+                    <thead class="table-light">
+                        <tr>
+                            <th>Type</th>
+                            <th>Category</th>
+                            <th>Description</th>
+                            <th>Date</th>
+                            <th class="text-end">Amount</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        @for (item of transactions; track item.id) {
+                        <tr>
+
+                            <td>
+                                <span class="badge" [class.bg-success]="item.type === 'INCOME'"
+                                    [class.bg-danger]="item.type === 'EXPENSE'">
+
+                                    {{ item.type }}
+
+                                </span>
+                            </td>
+
+                            <td>{{ item.category }}</td>
+
+                            <td>
+                                {{ item.description || '-' }}
+                            </td>
+
+                            <td>
+                                {{ item.transactionDate | date:'dd MMM yyyy' }}
+                            </td>
+
+                            <td class="text-end fw-semibold" [class.text-success]="item.type === 'INCOME'"
+                                [class.text-danger]="item.type === 'EXPENSE'">
+
+                                {{ item.type === 'EXPENSE' ? '-' : '+' }}
+                                {{ item.amount | currency:'INR':'symbol':'1.2-2' }}
+
+                            </td>
+
+                        </tr>
+                        }
+                    </tbody>
+
+                </table>
+
+            </div>
+            }
+
+        </section>
+
+    </main>
+
+</div>
