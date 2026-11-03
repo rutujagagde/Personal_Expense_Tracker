@@ -3,13 +3,19 @@ package com.expensetracker.service;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.YearMonth;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.TreeMap;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.expensetracker.dto.DashboardDTO;
+import com.expensetracker.dto.ReportDTO;
 import com.expensetracker.entity.Transaction;
 import com.expensetracker.entity.User;
 import com.expensetracker.repository.TransactionRepository;
@@ -60,13 +66,15 @@ public class TransactionService {
             LocalDate startDate,
             LocalDate endDate) {
 
-        List<Transaction> transactions = repo.filterTransactions(
-                userId, category, type, startDate, endDate);
+        // 1. Get all transactions belonging to this user
+        List<Transaction> allTransactions =
+                repo.findByUserId(userId);
 
         BigDecimal totalIncome = BigDecimal.ZERO;
         BigDecimal totalExpenses = BigDecimal.ZERO;
 
-        for (Transaction transaction : transactions) {
+        // 2. Calculate the actual balance using all transactions
+        for (Transaction transaction : allTransactions) {
 
             BigDecimal amount = transaction.getAmount();
 
@@ -76,19 +84,27 @@ public class TransactionService {
 
             if ("INCOME".equalsIgnoreCase(transaction.getType())) {
                 totalIncome = totalIncome.add(amount);
+
             } else if ("EXPENSE".equalsIgnoreCase(transaction.getType())) {
                 totalExpenses = totalExpenses.add(amount);
             }
         }
 
+        // 3. Calculate the actual available balance
         BigDecimal availableBalance =
                 totalIncome.subtract(totalExpenses);
 
+        // 4. Apply filters only to the transaction list
+        List<Transaction> filteredTransactions =
+                repo.filterTransactions(
+                        userId, category, type, startDate, endDate);
+
+        // 5. Return the dashboard data
         return new DashboardDTO(
                 totalIncome,
                 totalExpenses,
                 availableBalance,
-                transactions);
+                filteredTransactions);
     }
 
     // Get transaction for editing
@@ -107,6 +123,9 @@ public class TransactionService {
         return null;
     }
 
+    public List<Transaction> testExpenseFilter(Long userId) {
+        return repo.findByUser_IdAndType(userId, "EXPENSE");
+    }
     // Update transaction
     public Transaction updateTransaction(
             Long id, Long userId, Transaction transaction) {
@@ -132,7 +151,6 @@ public class TransactionService {
         return null;
     }
 
-    // Delete transaction
     public boolean deleteTransaction(Long id, Long userId) {
 
         Optional<Transaction> opt = repo.findById(id);
@@ -147,5 +165,81 @@ public class TransactionService {
         }
 
         return false;
+    }
+    public ReportDTO getReportSummary(
+            Long userId,
+            LocalDate startDate,
+            LocalDate endDate) {
+
+        List<Transaction> transactions =
+                repo.filterTransactions(userId, null, null, startDate, endDate);
+
+        BigDecimal totalIncome = BigDecimal.ZERO;
+        BigDecimal totalExpenses = BigDecimal.ZERO;
+
+        Map<String, BigDecimal> categoryExpenses = new LinkedHashMap<>();
+
+        Map<YearMonth, ReportDTO.MonthlySummary> monthlyData = new TreeMap<>();
+
+        for (Transaction transaction : transactions) {
+
+            BigDecimal amount = transaction.getAmount();
+
+            if (amount == null) {
+                amount = BigDecimal.ZERO;
+            }
+
+            String type = transaction.getType();
+
+            if ("INCOME".equalsIgnoreCase(type)) {
+                totalIncome = totalIncome.add(amount);
+            } else if ("EXPENSE".equalsIgnoreCase(type)) {
+                totalExpenses = totalExpenses.add(amount);
+
+                String category = transaction.getCategory();
+
+                categoryExpenses.put(
+                        category,
+                        categoryExpenses.getOrDefault(category, BigDecimal.ZERO).add(amount)
+                );
+            }
+
+            if (transaction.getTransactionDate() != null) {
+
+                YearMonth month = YearMonth.from(transaction.getTransactionDate());
+
+                ReportDTO.MonthlySummary summary = monthlyData.get(month);
+
+                if (summary == null) {
+                    summary = new ReportDTO.MonthlySummary(
+                            month.toString(),
+                            BigDecimal.ZERO,
+                            BigDecimal.ZERO
+                    );
+                    monthlyData.put(month, summary);
+                }
+
+                if ("INCOME".equalsIgnoreCase(type)) {
+                    summary.setTotalIncome(
+                            summary.getTotalIncome().add(amount)
+                    );
+                } else if ("EXPENSE".equalsIgnoreCase(type)) {
+                    summary.setTotalExpenses(
+                            summary.getTotalExpenses().add(amount)
+                    );
+                }
+            }
+        }
+
+        BigDecimal availableBalance = totalIncome.subtract(totalExpenses);
+
+        return new ReportDTO(
+                totalIncome,
+                totalExpenses,
+                availableBalance,
+                categoryExpenses,
+                new ArrayList<>(monthlyData.values()),
+                transactions
+        );
     }
 }

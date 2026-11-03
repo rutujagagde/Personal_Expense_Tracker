@@ -1,73 +1,147 @@
+
 import { Component } from '@angular/core';
-import { Router, RouterLink } from '@angular/router';
 import {
-  FormControl,
+  FormBuilder,
   FormGroup,
+  Validators,
   ReactiveFormsModule
 } from '@angular/forms';
+import { CommonModule } from '@angular/common';
+import { Router, RouterLink } from '@angular/router';
 import { UserService } from '../../services/userservice';
 
 @Component({
   selector: 'app-register',
   standalone: true,
-  imports: [ReactiveFormsModule, RouterLink],
+  imports: [CommonModule, ReactiveFormsModule, RouterLink],
   templateUrl: './register.html',
   styleUrl: './register.css'
 })
 export class Register {
 
-  user = new FormGroup({
-    name: new FormControl(''),
-    email: new FormControl(''),
-    password: new FormControl(''),
-    confirm: new FormControl('')
-  });
+  user: FormGroup;
+
+  errorMessage = '';
+  successMessage = '';
+  loading = false;
 
   constructor(
-    private nav: Router,
-    private userservice: UserService
-  ) { }
+    private fb: FormBuilder,
+    private userService: UserService,
+    private router: Router
+  ) {
+
+    this.user = this.fb.group({
+
+      name: [
+        '',
+        [
+          Validators.required,
+          Validators.pattern(/^[A-Za-z]+(?:\s+[A-Za-z]+)*$/)
+        ]
+      ],
+
+      email: [
+        '',
+        [
+          Validators.required,
+          Validators.email
+        ]
+      ],
+
+      password: [
+        '',
+        [
+          Validators.required,
+          Validators.minLength(6)
+        ]
+      ],
+
+      confirmPassword: [
+        '',
+        [
+          Validators.required
+        ]
+      ]
+
+    });
+  }
+
+  // Easy access to form controls
+  get f() {
+    return this.user.controls;
+  }
+
+  // Remove numbers and special characters immediately
+  filterFullName(event: Event) {
+
+    const input = event.target as HTMLInputElement;
+
+    const filteredValue = input.value.replace(/[^A-Za-z\s]/g, '');
+
+    input.value = filteredValue;
+
+    this.user.get('name')?.setValue(filteredValue);
+  }
+
+  // Check whether passwords match
+  get passwordMismatch(): boolean {
+
+    return this.user.get('confirmPassword')?.touched === true &&
+      this.user.get('password')?.value !==
+      this.user.get('confirmPassword')?.value;
+  }
 
   registerSubmit() {
 
-    const formData = this.user.value;
+    this.errorMessage = '';
+    this.successMessage = '';
+
+    if (this.user.invalid) {
+      this.user.markAllAsTouched();
+      return;
+    }
 
     if (
-      !formData.name ||
-      !formData.email ||
-      !formData.password
+      this.user.get('password')?.value !==
+      this.user.get('confirmPassword')?.value
     ) {
-      alert('Please fill all required fields');
+      this.user.get('confirmPassword')?.markAsTouched();
       return;
     }
 
-    if (formData.password !== formData.confirm) {
-      alert('Passwords do not match');
-      return;
-    }
+    this.loading = true;
 
     const userData = {
-      name: formData.name,
-      email: formData.email,
-      password: formData.password
+      name: this.user.value.name.trim(),
+      email: this.user.value.email.trim(),
+      password: this.user.value.password
     };
 
-    this.userservice.register(userData).subscribe({
+    this.userService.register(userData).subscribe({
 
-      next: (response: any) => {
-        console.log('Registration response:', response);
-        alert('Registration successful!');
-        this.nav.navigate(['/login']);
+      next: () => {
+
+        this.loading = false;
+        this.successMessage = 'Registration successful! Please login.';
+
+        this.user.reset();
+
+        setTimeout(() => {
+          this.router.navigate(['/login']);
+        }, 1500);
+
       },
 
-      error: (error: any) => {
-        console.error('Registration error:', error);
-        console.error('Status:', error.status);
-        console.error('Backend message:', error.error);
+      error: (error) => {
 
-        alert(
-          'Registration failed. Check the browser console.'
-        );
+        this.loading = false;
+
+        this.errorMessage =
+          error.error?.message ||
+          error.error ||
+          'Registration failed. Please try again.';
+
       }
 
     });

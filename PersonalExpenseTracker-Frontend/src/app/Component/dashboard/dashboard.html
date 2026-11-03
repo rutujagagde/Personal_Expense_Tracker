@@ -1,133 +1,141 @@
+<!-- Shared Sidebar -->
+<app-sidebar (profileClick)="MyProfile()">
+</app-sidebar>
+
+<!-- Dashboard Main Layout -->
 <div class="dashboard-layout">
 
-    <!-- Sidebar -->
-    <aside class="sidebar">
-        <a routerLink="/dashboard" class="brand">
-            <span class="brand-icon">S</span>
-            SpendWise
-        </a>
-
-        <p class="menu-title">MAIN MENU</p>
-
-        <a routerLink="/dashboard" class="sidebar-link active">
-            <span>▦</span> Dashboard
-        </a>
-
-        <a (click)="Transaction()" class="sidebar-link">
-            <span>⇄</span> Transactions
-        </a>
-
-        <a (click)="Transaction()" class="sidebar-link">
-            <span>↗</span> Income
-        </a>
-
-        <a (click)="Transaction()" class="sidebar-link">
-            <span>↘</span> Expenses
-        </a>
-
-        <a (click)="Transaction()" class="sidebar-link">
-            <span>▤</span> Reports
-        </a>
-
-        <div class="sidebar-bottom">
-            <a (click)="logout()" class="sidebar-link">
-                <span>↪</span> Logout
-            </a>
-        </div>
-    </aside>
-
-    <!-- Main Dashboard -->
     <main class="dashboard-main">
 
         <!-- Header -->
         <header class="dashboard-topbar">
+
             <div>
                 <h2>My Dashboard</h2>
 
                 @if (loading) {
                 <p>Loading user details...</p>
                 } @else if (user) {
+
                 <div class="user-profile">
+
                     <h3>Welcome back, {{ user.name }}!</h3>
+
                     <p>Here's your financial overview.</p>
+
                     <p>Email: {{ user.email }}</p>
+
                     <p>User ID: {{ user.id }}</p>
+
                 </div>
                 }
             </div>
 
-            <button class="btn btn-primary" (click)="Transaction()">
+            <button type="button" class="btn btn-primary" (click)="Transaction()">
+
                 + Add Transaction
+
             </button>
+
         </header>
 
         <!-- Error Message -->
         @if (errorMessage) {
+
         <div class="alert alert-danger mt-3">
+
             {{ errorMessage }}
 
-            <button class="btn btn-sm btn-outline-danger ms-2" (click)="getDashboardSummary()">
+            <button type="button" class="btn btn-sm btn-outline-danger ms-2" (click)="getDashboardSummary()">
+
                 Retry
+
             </button>
+
         </div>
         }
 
         <!-- Summary Cards -->
         <section class="row g-4 mt-2">
 
+            <!-- Available Balance -->
             <div class="col-md-4">
-                <div class="card border-0 shadow-sm rounded-4 p-3">
+
+                <div class="card summary-card border-0 shadow-sm rounded-4 p-3">
+
                     <p class="text-secondary">Available Balance</p>
 
                     @if (summaryLoading) {
                     <h3>Loading...</h3>
                     } @else {
+
                     <h3 class="text-primary fw-bold">
+
                         {{ availableBalance | currency:'INR':'symbol':'1.2-2' }}
+
                     </h3>
                     }
+
                 </div>
+
             </div>
 
+            <!-- Total Income -->
             <div class="col-md-4">
-                <div class="card border-0 shadow-sm rounded-4 p-3">
+
+                <div class="card summary-card border-0 shadow-sm rounded-4 p-3">
+
                     <p class="text-secondary">Total Income</p>
 
                     @if (summaryLoading) {
                     <h3>Loading...</h3>
                     } @else {
+
                     <h3 class="text-success fw-bold">
+
                         {{ totalIncome | currency:'INR':'symbol':'1.2-2' }}
+
                     </h3>
                     }
+
                 </div>
+
             </div>
 
+            <!-- Total Expenses -->
             <div class="col-md-4">
-                <div class="card border-0 shadow-sm rounded-4 p-3">
+
+                <div class="card summary-card border-0 shadow-sm rounded-4 p-3">
+
                     <p class="text-secondary">Total Expenses</p>
 
                     @if (summaryLoading) {
                     <h3>Loading...</h3>
                     } @else {
+
                     <h3 class="text-danger fw-bold">
+
                         {{ totalExpenses | currency:'INR':'symbol':'1.2-2' }}
+
                     </h3>
                     }
+
                 </div>
+
             </div>
 
         </section>
 
-        <!-- Filters -->
+        <!-- Transaction Filters -->
         <section class="card border-0 shadow-sm rounded-4 p-4 mt-4">
 
             <h5 class="fw-bold">Filter Transactions</h5>
 
             <div class="row g-3 mt-1">
 
-                <!-- Category Filter -->
+                <!-- Category -->
                 <div class="col-md-3">
+
                     <label for="categoryFilter" class="form-label">
                         Category
                     </label>
@@ -138,15 +146,20 @@
                         <option value="">All Categories</option>
 
                         @for (category of categories; track category) {
+
                         <option [value]="category">
                             {{ category }}
                         </option>
+
                         }
+
                     </select>
+
                 </div>
 
-                <!-- Type Filter -->
+                <!-- Transaction Type -->
                 <div class="col-md-3">
+
                     <label for="typeFilter" class="form-label">
                         Transaction Type
                     </label>
@@ -157,39 +170,50 @@
                         <option value="">All Types</option>
                         <option value="INCOME">Income</option>
                         <option value="EXPENSE">Expense</option>
+
                     </select>
+
                 </div>
 
                 <!-- Start Date -->
                 <div class="col-md-3">
+
                     <label for="startDate" class="form-label">
                         From Date
                     </label>
 
                     <input type="date" id="startDate" class="form-control" [value]="startDate"
                         (change)="startDate = $any($event.target).value">
+
                 </div>
 
                 <!-- End Date -->
                 <div class="col-md-3">
+
                     <label for="endDate" class="form-label">
                         To Date
                     </label>
 
                     <input type="date" id="endDate" class="form-control" [value]="endDate"
                         (change)="endDate = $any($event.target).value">
+
                 </div>
 
             </div>
 
             <div class="d-flex gap-2 flex-wrap mt-3">
 
-                <button class="btn btn-primary" [disabled]="summaryLoading" (click)="applyFilters()">
+                <button type="button" class="btn btn-primary" [disabled]="summaryLoading" (click)="applyFilters()">
+
                     Apply Filters
+
                 </button>
 
-                <button class="btn btn-outline-secondary" [disabled]="summaryLoading" (click)="clearFilters()">
+                <button type="button" class="btn btn-outline-secondary" [disabled]="summaryLoading"
+                    (click)="clearFilters()">
+
                     Clear Filters
+
                 </button>
 
             </div>
@@ -203,19 +227,26 @@
 
             <div class="d-flex gap-3 flex-wrap mt-3">
 
-                <button class="btn btn-outline-primary" (click)="Transaction()">
+                <button type="button" class="btn btn-outline-primary" (click)="Transaction()">
+
                     Add Income
+
                 </button>
 
-                <button class="btn btn-outline-danger" (click)="Transaction()">
+                <button type="button" class="btn btn-outline-danger" (click)="Transaction()">
+
                     Add Expense
+
                 </button>
 
-                <button class="btn btn-outline-secondary" (click)="Transaction()">
+                <button type="button" class="btn btn-outline-secondary" (click)="Transaction()">
+
                     View Transactions
+
                 </button>
 
             </div>
+
         </section>
 
         <!-- Recent Transactions -->
@@ -225,25 +256,36 @@
                         flex-wrap gap-2 mb-3">
 
                 <div>
-                    <h5 class="fw-bold mb-1">Recent Transactions</h5>
+
+                    <h5 class="fw-bold mb-1">
+                        Recent Transactions
+                    </h5>
+
                     <p class="text-secondary mb-0">
                         Transactions matching your selected filters
                     </p>
+
                 </div>
 
-                <button class="btn btn-sm btn-outline-primary" (click)="Transaction()">
+                <button type="button" class="btn btn-sm btn-outline-primary" (click)="Transaction()">
+
                     View All
+
                 </button>
 
             </div>
 
             @if (summaryLoading) {
+
             <p>Loading transactions...</p>
+
             } @else if (transactions.length === 0) {
+
             <p class="text-secondary">
                 No transactions found. Try changing the filters or add
                 your first transaction.
             </p>
+
             } @else {
 
             <div class="table-responsive">
@@ -251,6 +293,7 @@
                 <table class="table table-hover align-middle">
 
                     <thead class="table-light">
+
                         <tr>
                             <th>Type</th>
                             <th>Category</th>
@@ -258,19 +301,24 @@
                             <th>Date</th>
                             <th class="text-end">Amount</th>
                         </tr>
+
                     </thead>
 
                     <tbody>
+
                         @for (item of transactions; track item.id) {
+
                         <tr>
 
                             <td>
+
                                 <span class="badge" [class.bg-success]="item.type === 'INCOME'"
                                     [class.bg-danger]="item.type === 'EXPENSE'">
 
                                     {{ item.type }}
 
                                 </span>
+
                             </td>
 
                             <td>{{ item.category }}</td>
@@ -287,21 +335,184 @@
                                 [class.text-danger]="item.type === 'EXPENSE'">
 
                                 {{ item.type === 'EXPENSE' ? '-' : '+' }}
+
                                 {{ item.amount | currency:'INR':'symbol':'1.2-2' }}
 
                             </td>
 
                         </tr>
+
                         }
+
                     </tbody>
 
                 </table>
 
             </div>
+
             }
 
         </section>
 
     </main>
+
+</div>
+
+
+<!-- ==================================
+     EDIT PROFILE MODAL
+=================================== -->
+
+<div class="modal fade" id="editProfileModal" tabindex="-1" aria-labelledby="editProfileLabel" aria-hidden="true">
+
+    <div class="modal-dialog modal-dialog-centered">
+
+        <div class="modal-content rounded-4 border-0 shadow">
+
+            <!-- Modal Header -->
+            <div class="modal-header">
+
+                <div>
+
+                    <h5 class="modal-title fw-bold" id="editProfileLabel">
+
+                        👤 Edit Profile
+
+                    </h5>
+
+                    <p class="text-secondary mb-0">
+                        Manage your personal information.
+                    </p>
+
+                </div>
+
+                <button type="button" class="btn-close" aria-label="Close" data-bs-dismiss="modal"
+                    (click)="cancelEditProfile()">
+                </button>
+
+            </div>
+
+            <!-- Modal Body -->
+            <div class="modal-body">
+
+                <!-- Success Message -->
+                @if (profileMessage) {
+
+                <div class="alert alert-success">
+                    {{ profileMessage }}
+                </div>
+
+                }
+
+                <!-- Error Message -->
+                @if (profileError) {
+
+                <div class="alert alert-danger">
+                    {{ profileError }}
+                </div>
+
+                }
+
+                <form #profileForm="ngForm" (ngSubmit)="updateProfile()" novalidate>
+
+                    <!-- Full Name -->
+                    <div class="mb-3">
+
+                        <label for="profileName" class="form-label">
+                            Full Name
+                        </label>
+
+                        <input type="text" id="profileName" class="form-control" name="name" [(ngModel)]="editUser.name"
+                            #profileName="ngModel" required minlength="3" maxlength="50"
+                            pattern="^[a-zA-Z]+( [a-zA-Z]+)*$" placeholder="Enter your full name" autocomplete="name"
+                            [class.is-invalid]="profileSubmitted &&
+                                (!isProfileNameValid() || profileName.invalid)">
+
+                        @if (profileSubmitted &&
+                        (!isProfileNameValid() || profileName.invalid)) {
+
+                        <div class="invalid-feedback">
+                            Enter a valid name using letters and spaces only.
+                            Minimum 3 and maximum 50 characters.
+                        </div>
+
+                        }
+
+                    </div>
+
+                    <!-- Email -->
+                    <div class="mb-3">
+
+                        <label for="profileEmail" class="form-label">
+                            Email Address
+                        </label>
+
+                        <input type="email" id="profileEmail" class="form-control" name="email"
+                            [(ngModel)]="editUser.email" #profileEmail="ngModel" required email
+                            placeholder="Enter your email" autocomplete="email" [class.is-invalid]="profileSubmitted &&
+                                (!isProfileEmailValid() || profileEmail.invalid)">
+
+                        @if (profileSubmitted &&
+                        (!isProfileEmailValid() || profileEmail.invalid)) {
+
+                        <div class="invalid-feedback">
+                            Please enter a valid email address.
+                        </div>
+
+                        }
+
+                    </div>
+
+                    <!-- Password -->
+                    <div class="mb-3">
+
+                        <label for="profilePassword" class="form-label">
+                            Password
+                        </label>
+
+                        <input type="password" id="profilePassword" class="form-control" name="password"
+                            [(ngModel)]="editUser.password" #profilePassword="ngModel" required
+                            placeholder="Enter your password" autocomplete="new-password" [class.is-invalid]="profileSubmitted &&
+                                profilePassword.invalid">
+
+                        @if (profileSubmitted && profilePassword.invalid) {
+
+                        <div class="invalid-feedback">
+                            Password is required.
+                        </div>
+
+                        }
+
+                    </div>
+
+                    <!-- Buttons -->
+                    <div class="d-flex justify-content-end gap-2 flex-wrap">
+
+                        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal"
+                            (click)="cancelEditProfile()">
+
+                            Cancel
+
+                        </button>
+
+                        <button type="submit" class="btn btn-primary" [disabled]="profileSaving">
+
+                            @if (profileSaving) {
+                            Saving...
+                            } @else {
+                            Save Changes
+                            }
+
+                        </button>
+
+                    </div>
+
+                </form>
+
+            </div>
+
+        </div>
+
+    </div>
 
 </div>

@@ -1,381 +1,392 @@
-/* ========================================
-   SpendWise Dashboard - Main Layout
-======================================== */
+/* =================================
+   DASHBOARD MAIN LAYOUT
+================================= */
 
 :host {
     display: block;
     min-height: 100vh;
-    color: #1e293b;
-    font-family: Inter, "Segoe UI", Arial, sans-serif;
+    background: #f5f7fc;
 }
 
 .dashboard-layout {
-    display: flex;
     min-height: 100vh;
-    background:
-        radial-gradient(circle at top right, #eef2ff 0, transparent 30%),
-        #f6f8fc;
+    margin-left: 250px;
+    padding: 30px;
+    box-sizing: border-box;
 }
-
-/* ========================================
-   Sidebar
-======================================== */
-
-.sidebar {
-    width: 250px;
-    min-width: 250px;
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    padding: 28px 17px 20px;
-    background: linear-gradient(180deg, #17243b 0%, #101a2e 100%);
-    color: #fff;
-    box-shadow: 5px 0 25px rgba(15, 23, 42, 0.06);
-}
-
-.brand {
-    display: flex;
-    align-items: center;
-    gap: 11px;
-    margin-bottom: 42px;
-    padding: 0 8px;
-    color: #fff;
-    text-decoration: none;
-    font-size: 23px;
-    font-weight: 800;
-    letter-spacing: -0.6px;
-}
-
-.brand-icon {
-    display: grid;
-    place-items: center;
-    width: 42px;
-    height: 42px;
-    flex-shrink: 0;
-    border-radius: 13px;
-    background: linear-gradient(135deg, #8171ff, #5845d6);
-    box-shadow: 0 6px 16px rgba(109, 92, 232, 0.35);
-    color: #fff;
-    font-size: 21px;
-    font-weight: 800;
-}
-
-.menu-title {
-    margin: 0 0 14px 12px;
-    color: #94a3b8;
-    font-size: 10px;
-    font-weight: 800;
-    letter-spacing: 1.8px;
-}
-
-.sidebar-link {
-    display: flex;
-    align-items: center;
-    gap: 13px;
-    margin-bottom: 7px;
-    padding: 13px 14px;
-    border: 1px solid transparent;
-    border-radius: 11px;
-    color: #cbd5e1;
-    text-decoration: none;
-    font-size: 14px;
-    font-weight: 600;
-    cursor: pointer;
-    transition:
-        background 0.2s ease,
-        color 0.2s ease,
-        transform 0.2s ease;
-}
-
-.sidebar-link span {
-    display: inline-grid;
-    place-items: center;
-    width: 23px;
-    font-size: 19px;
-}
-
-.sidebar-link:hover {
-    background: rgba(255, 255, 255, 0.08);
-    color: #fff;
-    transform: translateX(2px);
-}
-
-.sidebar-link.active {
-    background: linear-gradient(100deg, #6555e8, #5544ca);
-    color: #fff;
-    box-shadow: 0 7px 18px rgba(86, 69, 203, 0.25);
-}
-
-.sidebar-bottom {
-    margin-top: auto;
-    padding-top: 20px;
-    border-top: 1px solid rgba(255, 255, 255, 0.09);
-}
-
-/* ========================================
-   Main Content
-======================================== */
 
 .dashboard-main {
-    flex: 1;
+    width: 100%;
+    max-width: 1600px;
+    margin: 0 auto;
     min-width: 0;
-    padding: 34px;
-    overflow-x: hidden;
 }
+
+/* =================================
+   DASHBOARD HEADER
+================================= */
 
 .dashboard-topbar {
     display: flex;
-    align-items: flex-start;
+    align-items: center;
     justify-content: space-between;
-    gap: 22px;
+    gap: 20px;
     flex-wrap: wrap;
-    margin-bottom: 22px;
+    margin-bottom: 25px;
 }
 
 .dashboard-topbar h2 {
-    margin: 0 0 8px;
     color: #17243b;
-    font-size: clamp(24px, 3vw, 31px);
+    font-size: 28px;
     font-weight: 800;
-    letter-spacing: -0.8px;
+    margin-bottom: 10px;
 }
 
 .dashboard-topbar p {
-    color: #7c879a;
+    color: #718096;
     font-size: 14px;
 }
 
 .user-profile {
-    margin-top: 18px;
-    padding: 19px 22px;
-    border: 1px solid #e8eaf4;
-    border-radius: 16px;
-    background: rgba(255, 255, 255, 0.85);
-    box-shadow: 0 5px 20px rgba(31, 41, 55, 0.035);
+    margin-top: 12px;
 }
 
 .user-profile h3 {
-    margin: 0 0 8px;
-    color: #293b70;
+    color: #5845d6;
     font-size: 20px;
-    font-weight: 750;
+    font-weight: 700;
 }
 
 .user-profile p {
-    margin-bottom: 6px;
+    margin-bottom: 5px;
+}
+
+/* =================================
+   BUTTONS
+================================= */
+
+.btn-primary {
+    background: linear-gradient(135deg,
+            #7162ed,
+            #5845d6);
+
+    border: none;
+    border-radius: 10px;
+    padding: 11px 20px;
+
+    font-weight: 600;
+
+    box-shadow: 0 5px 14px rgba(88, 69, 214, 0.18);
+
+    transition: all 0.25s ease;
+}
+
+.btn-primary:hover {
+    background: linear-gradient(135deg,
+            #6252df,
+            #4634bd);
+
+    transform: translateY(-2px);
+
+    box-shadow: 0 7px 18px rgba(88, 69, 214, 0.25);
+}
+
+.btn-outline-primary {
+    color: #5845d6;
+    border-color: #5845d6;
+    border-radius: 9px;
+    font-weight: 600;
+}
+
+.btn-outline-primary:hover {
+    background: #5845d6;
+    border-color: #5845d6;
+}
+
+/* =================================
+   SUMMARY CARDS
+================================= */
+
+.summary-card {
+    height: 100%;
+    min-height: 125px;
+
+    background: #ffffff;
+
+    border-radius: 17px !important;
+
+    transition: transform 0.25s ease,
+        box-shadow 0.25s ease;
+}
+
+.summary-card:hover {
+    transform: translateY(-4px);
+
+    box-shadow: 0 10px 25px rgba(31, 41, 55, 0.08) !important;
+}
+
+.summary-card p {
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 14px;
+}
+
+.summary-card h3 {
+    font-size: clamp(20px, 2vw, 28px);
+    font-weight: 800;
     overflow-wrap: anywhere;
 }
 
-/* ========================================
-   Buttons
-======================================== */
-
-.dashboard-main .btn {
-    min-height: 40px;
-    border-radius: 10px;
-    font-size: 13px;
-    font-weight: 700;
-    transition:
-        transform 0.2s ease,
-        box-shadow 0.2s ease;
-}
-
-.dashboard-main .btn:hover {
-    transform: translateY(-1px);
-}
-
-.dashboard-main .btn-primary {
-    border-color: #6555e8;
-    background: linear-gradient(110deg, #7061f0, #5746d4);
-    box-shadow: 0 5px 13px rgba(101, 85, 232, 0.18);
-}
-
-.dashboard-main .btn-primary:hover {
-    border-color: #5140c7;
-    background: #5140c7;
-    box-shadow: 0 7px 16px rgba(101, 85, 232, 0.25);
-}
-
-/* ========================================
-   Summary Cards and Content Cards
-======================================== */
+/* =================================
+   COMMON CARDS
+================================= */
 
 .dashboard-main .card {
-    border: 1px solid #edf0f6 !important;
+    background: #ffffff;
     border-radius: 17px !important;
-    background: rgba(255, 255, 255, 0.96);
-    box-shadow: 0 5px 22px rgba(31, 41, 55, 0.045) !important;
-    transition:
-        box-shadow 0.2s ease,
-        transform 0.2s ease;
+    border: 1px solid #edf0f7 !important;
 }
 
-.dashboard-main .card:hover {
-    box-shadow: 0 10px 28px rgba(31, 41, 55, 0.08) !important;
+.dashboard-main h5 {
+    color: #17243b;
+    font-size: 18px;
 }
 
-.dashboard-main .card p.text-secondary {
-    margin-bottom: 11px;
+.dashboard-main .text-secondary {
+    color: #7b8798 !important;
+}
+
+/* =================================
+   FILTER SECTION
+================================= */
+
+.dashboard-main .form-label {
+    color: #374151;
     font-size: 13px;
     font-weight: 600;
 }
 
-.dashboard-main .card h3 {
-    overflow-wrap: anywhere;
-    font-size: clamp(22px, 2.5vw, 29px);
-    letter-spacing: -0.5px;
+.dashboard-main .form-control,
+.dashboard-main .form-select {
+    min-height: 44px;
+
+    border: 1px solid #dfe4ee;
+    border-radius: 9px;
+
+    font-size: 14px;
+
+    background-color: #ffffff;
 }
 
-.dashboard-main .card h5 {
-    color: #23314d;
-    font-size: 17px;
-    font-weight: 750;
+.dashboard-main .form-control:focus,
+.dashboard-main .form-select:focus {
+    border-color: #7162ed;
+
+    box-shadow: 0 0 0 3px rgba(113, 98, 237, 0.12);
 }
 
-/* ========================================
-   Tables
-======================================== */
+/* =================================
+   TRANSACTION TABLE
+================================= */
 
-.dashboard-main .table-responsive {
+.table-responsive {
     width: 100%;
-    border-radius: 11px;
+    overflow-x: auto;
 }
 
 .dashboard-main .table {
     margin-bottom: 0;
-    vertical-align: middle;
+    min-width: 650px;
+}
+
+.dashboard-main .table th {
+    color: #64748b;
+
+    font-size: 12px;
+    font-weight: 700;
+
+    padding: 15px 12px;
+
     white-space: nowrap;
 }
 
-.dashboard-main .table thead th {
-    padding: 14px 13px;
-    border-bottom: 1px solid #e9edf5;
-    color: #64748b;
-    font-size: 11px;
-    font-weight: 800;
-    letter-spacing: 0.6px;
-    text-transform: uppercase;
-}
+.dashboard-main .table td {
+    color: #374151;
 
-.dashboard-main .table tbody td {
-    padding: 15px 13px;
-    border-color: #f0f2f7;
-    color: #475569;
     font-size: 13px;
+
+    padding: 15px 12px;
+
+    vertical-align: middle;
 }
 
-.dashboard-main .table tbody tr:hover td {
-    background: #f8f9ff;
+.dashboard-main .table tbody tr {
+    transition: background 0.2s ease;
+}
+
+.dashboard-main .table tbody tr:hover {
+    background: #f8f7ff;
 }
 
 .dashboard-main .badge {
-    padding: 7px 10px;
-    border-radius: 7px;
-    font-size: 10px;
-    font-weight: 800;
-    letter-spacing: 0.4px;
+    padding: 7px 11px;
+    border-radius: 20px;
+    font-size: 11px;
 }
 
-/* ========================================
-   Loading and Error States
-======================================== */
+/* =================================
+   QUICK ACTIONS
+================================= */
+
+.dashboard-main section {
+    min-width: 0;
+}
 
 .dashboard-main .alert {
     border-radius: 12px;
-    font-size: 14px;
 }
 
-/* ========================================
-   Responsive Design
-======================================== */
+/* =================================
+   EDIT PROFILE MODAL
+================================= */
 
-@media (max-width: 1100px) {
-    .sidebar {
-        width: 220px;
-        min-width: 220px;
-    }
-
-    .dashboard-main {
-        padding: 25px;
-    }
+.modal-content {
+    border-radius: 18px !important;
 }
 
-@media (max-width: 768px) {
+.modal-header {
+    padding: 22px;
+    border-bottom: 1px solid #edf0f7;
+}
+
+.modal-body {
+    padding: 24px;
+}
+
+.modal-title {
+    color: #17243b;
+}
+
+.modal-body .form-label {
+    color: #374151;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.modal-body .form-control {
+    min-height: 45px;
+    border-radius: 9px;
+    border: 1px solid #dfe4ee;
+}
+
+.modal-body .form-control:focus {
+    border-color: #7162ed;
+
+    box-shadow: 0 0 0 3px rgba(113, 98, 237, 0.12);
+}
+
+.modal-body .form-control.is-invalid {
+    border-color: #dc3545;
+}
+
+.modal-body .invalid-feedback {
+    font-size: 12px;
+}
+
+.modal-body .alert {
+    border-radius: 10px;
+    font-size: 13px;
+}
+
+/* =================================
+   TABLET RESPONSIVE
+================================= */
+
+@media (max-width: 991px) {
+
     .dashboard-layout {
-        flex-direction: column;
-    }
-
-    .sidebar {
-        width: 100%;
-        min-width: 0;
-        min-height: auto;
-        padding: 17px;
-    }
-
-    .brand {
-        margin-bottom: 20px;
-        font-size: 21px;
-    }
-
-    .menu-title {
-        margin-top: 4px;
-    }
-
-    .sidebar-link {
-        margin-bottom: 5px;
-        padding: 11px 12px;
-    }
-
-    .sidebar-bottom {
-        margin-top: 8px;
-        padding-top: 10px;
-    }
-
-    .dashboard-main {
-        padding: 20px 16px;
-    }
-
-    .dashboard-topbar {
-        align-items: stretch;
-        gap: 10px;
-    }
-
-    .dashboard-topbar>div {
-        width: 100%;
-    }
-
-    .dashboard-topbar>button {
-        align-self: flex-start;
-    }
-
-    .user-profile {
-        padding: 16px;
-    }
-
-    .dashboard-main .card {
-        border-radius: 14px !important;
-    }
-}
-
-@media (max-width: 480px) {
-    .dashboard-main {
-        padding: 15px 12px;
+        margin-left: 0;
+        padding: 75px 22px 25px;
     }
 
     .dashboard-topbar h2 {
-        font-size: 24px;
+        font-size: 25px;
     }
 
-    .dashboard-main .card h3 {
+}
+
+/* =================================
+   MOBILE RESPONSIVE
+================================= */
+
+@media (max-width: 576px) {
+
+    .dashboard-layout {
+        padding: 72px 14px 20px;
+    }
+
+    .dashboard-topbar {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .dashboard-topbar h2 {
         font-size: 23px;
     }
 
-    .dashboard-main .table thead th,
-    .dashboard-main .table tbody td {
-        padding: 11px 9px;
+    .dashboard-topbar .btn {
+        width: 100%;
+    }
+
+    .summary-card {
+        min-height: 105px;
+        padding: 17px !important;
+    }
+
+    .summary-card h3 {
+        font-size: 21px;
+    }
+
+    .dashboard-main .card {
+        padding: 17px !important;
+    }
+
+    .dashboard-main h5 {
+        font-size: 16px;
     }
 
     .dashboard-main .btn {
         font-size: 12px;
     }
+
+    .modal-dialog {
+        margin: 12px;
+    }
+
+    .modal-body {
+        padding: 17px;
+    }
+
+}
+
+/* =================================
+   EXTRA SMALL MOBILE
+================================= */
+
+@media (max-width: 360px) {
+
+    .dashboard-layout {
+        padding-left: 10px;
+        padding-right: 10px;
+    }
+
+    .dashboard-topbar h2 {
+        font-size: 20px;
+    }
+
+    .summary-card h3 {
+        font-size: 18px;
+    }
+
 }

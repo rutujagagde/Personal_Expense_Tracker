@@ -1,160 +1,278 @@
-<div class="container mt-4">
-    <!-- Back to Dashboard Button -->
-    <div class="mb-3">
-        <a routerLink="/dashboard" class="btn btn-outline-primary">
-            &larr; Back to Dashboard
-        </a>
-    </div>
-    <h2>SpendWise - Transactions</h2>
-    <p>Add and manage your income and expenses.</p>
+<div class="transactions-layout">
 
-    @if (message) {
-    <div class="alert alert-info">
-        {{ message }}
-    </div>
-    }
+    <!-- Shared Sidebar -->
+    <app-sidebar></app-sidebar>
 
-    <!-- Add / Update Transaction Form -->
-    <div class="card p-4 mb-4">
-        <h4>
-            {{ editId === 0 ? 'Add Transaction' : 'Update Transaction' }}
-        </h4>
+    <main class="transactions-container">
 
-        <form [formGroup]="transactionForm" (ngSubmit)="saveTransaction()">
-
-            <div class="mb-3">
-                <label>Transaction Type</label>
-                <select class="form-select" formControlName="type">
-                    <option value="INCOME">Income</option>
-                    <option value="EXPENSE">Expense</option>
-                </select>
+        <!-- Page Header -->
+        <div class="page-header">
+            <div>
+                <h2>Transactions</h2>
+                <p>Manage your income and expenses in one place.</p>
             </div>
 
-            <div class="mb-3">
-                <label>Category</label>
-                <input type="text" class="form-control" formControlName="category"
-                    placeholder="Enter category (e.g. Food, Rent, Medical)" required>
-            </div>
-            <div class="mb-3">
-                <label>Amount (₹)</label>
-                <input type="number" class="form-control" formControlName="amount" min="0.01" step="0.01">
-
-                @if (transactionForm.controls.amount.touched &&
-                transactionForm.controls.amount.invalid) {
-                <small class="text-danger">
-                    Enter an amount greater than zero.
-                </small>
-                }
-            </div>
-
-            <div class="mb-3">
-                <label>Date</label>
-                <input type="date" class="form-control" formControlName="transactionDate">
-            </div>
-
-            <div class="mb-3">
-                <label>Description</label>
-                <textarea class="form-control" formControlName="description" rows="2">
-                </textarea>
-            </div>
-
-            <button type="submit" class="btn btn-primary">
-                {{ editId === 0 ? 'Add Transaction' : 'Update Transaction' }}
+            <button type="button" class="btn btn-primary add-button" (click)="resetForm()">
+                + Add Transaction
             </button>
+        </div>
 
-            @if (editId !== 0) {
-            <button type="button" class="btn btn-secondary ms-2" (click)="resetForm()">
-                Cancel
+        <!-- Message -->
+        @if (message) {
+        <div class="alert alert-info alert-dismissible">
+            {{ message }}
+            <button type="button" class="btn-close" aria-label="Close" (click)="message = ''">
             </button>
+        </div>
+        }
+
+        <!-- Transaction Form -->
+        <section class="transaction-form-card">
+
+            <div class="section-heading">
+                <div>
+                    <h4>
+                        {{ editId === 0 ? 'Add New Transaction' : 'Edit Transaction' }}
+                    </h4>
+                    <p>Enter the transaction details below.</p>
+                </div>
+            </div>
+
+            <form [formGroup]="transactionForm" (ngSubmit)="saveTransaction()" novalidate>
+
+                <div class="form-grid">
+
+                    <!-- Type -->
+                    <div class="form-group">
+                        <label for="type">Transaction Type <span>*</span></label>
+
+                        <select id="type" class="form-select" formControlName="type">
+
+                            <option value="INCOME">Income</option>
+                            <option value="EXPENSE">Expense</option>
+
+                        </select>
+
+                        @if (transactionForm.get('type')?.touched &&
+                        transactionForm.get('type')?.invalid) {
+                        <small class="error-message">
+                            Please select a transaction type.
+                        </small>
+                        }
+                    </div>
+
+                    <!-- Category -->
+                    <div class="form-group">
+                        <label for="category">Category <span>*</span></label>
+
+                        <input id="category" type="text" class="form-control" formControlName="category"
+                            placeholder="Example: Food, Salary, Shopping">
+
+                        @if (transactionForm.get('category')?.touched &&
+                        transactionForm.get('category')?.hasError('required')) {
+                        <small class="error-message">
+                            Category is required.
+                        </small>
+                        }
+
+                        @if (transactionForm.get('category')?.touched &&
+                        transactionForm.get('category')?.hasError('pattern')) {
+                        <small class="error-message">
+                            Category cannot contain only spaces.
+                        </small>
+                        }
+                    </div>
+
+                    <!-- Amount -->
+                    <div class="form-group">
+                        <label for="amount">Amount (₹) <span>*</span></label>
+
+                        <input id="amount" type="number" class="form-control" formControlName="amount" min="0.01"
+                            step="0.01" placeholder="Enter amount">
+
+                        @if (transactionForm.get('amount')?.touched &&
+                        transactionForm.get('amount')?.hasError('required')) {
+                        <small class="error-message">
+                            Amount is required.
+                        </small>
+                        }
+
+                        @if (transactionForm.get('amount')?.touched &&
+                        transactionForm.get('amount')?.hasError('min')) {
+                        <small class="error-message">
+                            Amount must be greater than zero.
+                        </small>
+                        }
+                    </div>
+
+                    <!-- Date -->
+                    <div class="form-group">
+                        <label for="transactionDate">Transaction Date <span>*</span></label>
+
+                        <input id="transactionDate" type="date" class="form-control" formControlName="transactionDate">
+
+                        @if (transactionForm.get('transactionDate')?.touched &&
+                        transactionForm.get('transactionDate')?.invalid) {
+                        <small class="error-message">
+                            Transaction date is required.
+                        </small>
+                        }
+                    </div>
+
+                    <!-- Description -->
+                    <div class="form-group full-width">
+                        <label for="description">Description</label>
+
+                        <textarea id="description" class="form-control" formControlName="description" rows="3"
+                            maxlength="250" placeholder="Enter transaction details (optional)">
+                        </textarea>
+
+                        @if (transactionForm.get('description')?.touched &&
+                        transactionForm.get('description')?.hasError('maxlength')) {
+                        <small class="error-message">
+                            Description cannot exceed 250 characters.
+                        </small>
+                        }
+                    </div>
+
+                </div>
+
+                <!-- Form Buttons -->
+                <div class="form-actions">
+
+                    <button type="submit" class="btn btn-primary" [disabled]="transactionForm.invalid">
+
+                        {{ editId === 0 ? 'Save Transaction' : 'Update Transaction' }}
+
+                    </button>
+
+                    <button type="button" class="btn btn-outline-secondary" (click)="resetForm()">
+
+                        {{ editId === 0 ? 'Reset' : 'Cancel' }}
+
+                    </button>
+
+                </div>
+
+            </form>
+
+        </section>
+
+        <!-- Transaction List -->
+        <section class="transaction-list-card">
+
+            <div class="list-header">
+                <div>
+                    <h4>Transaction History</h4>
+                    <p>View and manage your recorded transactions.</p>
+                </div>
+
+                <div class="filter-control">
+                    <label for="typeFilter">Show</label>
+
+                    <select id="typeFilter" class="form-select" [value]="selectedTypeFilter"
+                        (change)="selectedTypeFilter = $any($event.target).value">
+
+                        <option value="">All Transactions</option>
+                        <option value="INCOME">Income</option>
+                        <option value="EXPENSE">Expenses</option>
+
+                    </select>
+                </div>
+            </div>
+
+            @if (filteredTransactions.length > 0) {
+
+            <div class="table-responsive">
+
+                <table class="table transaction-table">
+
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Type</th>
+                            <th>Category</th>
+                            <th>Amount</th>
+                            <th>Description</th>
+                            <th>Date</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+
+                        @for (item of filteredTransactions; track item.id; let i = $index) {
+
+                        <tr>
+
+                            <td>{{ i + 1 }}</td>
+
+                            <td>
+                                <span class="type-badge" [class.income-badge]="item.type === 'INCOME'"
+                                    [class.expense-badge]="item.type === 'EXPENSE'">
+
+                                    {{ item.type }}
+
+                                </span>
+                            </td>
+
+                            <td>{{ item.category }}</td>
+
+                            <td class="amount-cell" [class.income-amount]="item.type === 'INCOME'"
+                                [class.expense-amount]="item.type === 'EXPENSE'">
+
+                                ₹{{ item.amount }}
+
+                            </td>
+
+                            <td>{{ item.description || '-' }}</td>
+
+                            <td>{{ item.transactionDate }}</td>
+
+                            <td>
+                                <div class="action-buttons">
+
+                                    <button type="button" class="btn btn-sm btn-outline-primary"
+                                        (click)="editTransaction(item.id)">
+
+                                        Edit
+
+                                    </button>
+
+                                    <button type="button" class="btn btn-sm btn-outline-danger"
+                                        (click)="deleteTransaction(item.id)">
+
+                                        Delete
+
+                                    </button>
+
+                                </div>
+                            </td>
+
+                        </tr>
+
+                        }
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+            } @else {
+
+            <div class="empty-state">
+                <div class="empty-icon">📋</div>
+                <h5>No transactions found</h5>
+                <p>
+                    Add a transaction or change the selected filter.
+                </p>
+            </div>
+
             }
 
-        </form>
-    </div>
+        </section>
 
-    <!-- Category Filter -->
-    <!-- <div class="card p-3 mb-3">
-        <label class="form-label fw-bold">Filter by Category</label>
-
-        <select class="form-select" [value]="selectedCategory" (change)="filterCategory($any($event.target).value)">
-
-            <option value="ALL">All Categories</option>
-            <option value="Salary">Salary</option>
-            <option value="Business">Business</option>
-            <option value="Freelance">Freelance</option>
-            <option value="Investment">Investment</option>
-            <option value="Food">Food</option>
-            <option value="Shopping">Shopping</option>
-            <option value="Travel">Travel</option>
-            <option value="Bills">Bills</option>
-            <option value="Other">Other</option>
-        </select>
-    </div> -->
-
-    Category-wise Expense Total
-    <!-- <div class="card p-3 mb-4">
-        <h5>
-            {{ selectedCategory === 'ALL'
-            ? 'Total Expenses'
-            : selectedCategory + ' Expenses' }}
-        </h5>
-
-        <h3 class="text-danger">
-            ₹{{ getCategoryExpense() | number:'1.2-2' }}
-        </h3>
-    </div> -->
-
-    <!-- Transaction List -->
-    <h4>Transaction List</h4>
-
-    <div class="table-responsive">
-        <table class="table table-bordered table-striped">
-
-            <thead class="table-dark">
-                <tr>
-                    <th>ID</th>
-                    <th>Type</th>
-                    <th>Category</th>
-                    <th>Amount</th>
-                    <th>Date</th>
-                    <th>Description</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-
-            <tbody>
-                @for (item of transactions; track item.id) {
-                <tr>
-                    <td>{{ item.id }}</td>
-                    <td>
-                        <span class="badge" [class.bg-success]="item.type === 'INCOME'"
-                            [class.bg-danger]="item.type === 'EXPENSE'">
-                            {{ item.type }}
-                        </span>
-                    </td>
-                    <td>{{ item.category }}</td>
-                    <td>₹{{ item.amount | number:'1.2-2' }}</td>
-                    <td>{{ item.transactionDate }}</td>
-                    <td>{{ item.description }}</td>
-                    <td>
-                        <button class="btn btn-sm btn-warning" type="button" (click)="editTransaction(item.id)">
-                            Edit
-                        </button>
-
-                        <button class="btn btn-sm btn-danger ms-1" type="button" (click)="deleteTransaction(item.id)">
-                            Delete
-                        </button>
-                    </td>
-                </tr>
-                } @empty {
-                <tr>
-                    <td colspan="7" class="text-center">
-                        No transactions found for this category.
-                    </td>
-                </tr>
-                }
-            </tbody>
-
-        </table>
-    </div>
+    </main>
 
 </div>

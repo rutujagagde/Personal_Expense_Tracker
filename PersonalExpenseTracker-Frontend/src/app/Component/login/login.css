@@ -1,12 +1,15 @@
+/* Login page background */
 .auth-wrapper {
-    min-height: calc(100vh - 64px);
+    min-height: 100vh;
     display: flex;
     align-items: center;
     justify-content: center;
     background: linear-gradient(135deg, #e0f2fe 0%, #f1f5f9 100%);
-    padding: 2rem 1rem;
+    padding: 30px 16px;
+    box-sizing: border-box;
 }
 
+/* Login card */
 .auth-card {
     background: #ffffff;
     border-radius: 16px;
@@ -29,6 +32,7 @@
     }
 }
 
+/* Header */
 .auth-header {
     text-align: center;
     margin-bottom: 1.75rem;
@@ -52,6 +56,7 @@
     margin: 0;
 }
 
+/* Form */
 .form-group {
     margin-bottom: 1.1rem;
 }
@@ -66,6 +71,7 @@
 
 .form-group input {
     width: 100%;
+    min-height: 44px;
     padding: 0.7rem 0.9rem;
     border: 1px solid #cbd5e1;
     border-radius: 8px;
@@ -80,17 +86,39 @@
     box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
 }
 
+/* Invalid input */
+.form-group input.input-invalid {
+    border-color: #dc3545;
+}
+
+.form-group input.input-invalid:focus {
+    border-color: #dc3545;
+    box-shadow: 0 0 0 3px rgba(220, 53, 69, 0.12);
+}
+
+/* Validation message */
+.validation-error {
+    display: block;
+    color: #dc3545;
+    font-size: 12px;
+    margin-top: 6px;
+}
+
+/* Login error */
 .alert-error {
     background: #fee2e2;
     color: #b91c1c;
-    padding: 0.6rem 0.9rem;
+    border: 1px solid #fecaca;
+    padding: 0.7rem 0.9rem;
     border-radius: 8px;
     font-size: 0.85rem;
     margin-bottom: 1rem;
 }
 
+/* Login button */
 .btn-primary {
     width: 100%;
+    min-height: 45px;
     padding: 0.75rem;
     background: linear-gradient(135deg, #3b82f6, #2563eb);
     color: #fff;
@@ -112,6 +140,7 @@
     cursor: not-allowed;
 }
 
+/* Loading spinner */
 .spinner {
     display: inline-block;
     width: 16px;
@@ -128,6 +157,7 @@
     }
 }
 
+/* Footer */
 .auth-footer {
     text-align: center;
     margin-top: 1.25rem;
@@ -143,4 +173,20 @@
 
 .auth-footer a:hover {
     text-decoration: underline;
+}
+
+/* Mobile */
+@media (max-width: 480px) {
+    .auth-wrapper {
+        padding: 20px 14px;
+    }
+
+    .auth-card {
+        padding: 2rem 1.3rem;
+        border-radius: 13px;
+    }
+
+    .auth-header h2 {
+        font-size: 1.4rem;
+    }
 }

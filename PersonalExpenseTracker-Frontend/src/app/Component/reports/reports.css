@@ -1,0 +1,192 @@
+/* Main layout */
+.reports-layout {
+    min-height: 100vh;
+    background: #f5f7fb;
+}
+
+.reports-container {
+    margin-left: 250px;
+    min-height: 100vh;
+    padding: 30px;
+    box-sizing: border-box;
+}
+
+/* Page heading */
+.reports-container h2 {
+    color: #243b64;
+    font-size: 28px;
+}
+
+.reports-container>p {
+    color: #7b8495;
+}
+
+/* Common cards */
+.reports-container .card {
+    background: #ffffff;
+    border-radius: 14px;
+}
+
+.reports-container .card h5 {
+    color: #243b64;
+    font-size: 18px;
+}
+
+/* Date filters */
+.reports-container .form-label {
+    color: #344563;
+    font-weight: 600;
+}
+
+.reports-container .form-control {
+    min-height: 43px;
+    border: 1px solid #dce2ec;
+    border-radius: 8px;
+    box-shadow: none;
+}
+
+.reports-container .form-control:focus {
+    border-color: #5278bd;
+    box-shadow: 0 0 0 3px rgba(82, 120, 189, 0.12);
+}
+
+/* Summary cards */
+.report-card {
+    min-height: 155px;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.report-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 7px 20px rgba(36, 59, 100, 0.1) !important;
+}
+
+.report-card h3 {
+    font-size: 25px;
+    overflow-wrap: anywhere;
+}
+
+.income-card {
+    border-left: 4px solid #198754 !important;
+}
+
+.expense-card {
+    border-left: 4px solid #dc3545 !important;
+}
+
+.balance-card {
+    border-left: 4px solid #0d6efd !important;
+}
+
+/* Category progress */
+.reports-container .progress {
+    background: #e9edf5;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.reports-container .progress-bar {
+    border-radius: 10px;
+}
+
+/* Tables */
+.reports-container .table-responsive {
+    width: 100%;
+    overflow-x: auto;
+}
+
+.reports-container .table {
+    min-width: 600px;
+    vertical-align: middle;
+    margin-bottom: 0;
+}
+
+.reports-container .table thead th {
+    color: #52627d;
+    background: #f3f6fb;
+    font-size: 13px;
+    font-weight: 700;
+    padding: 13px 12px;
+    white-space: nowrap;
+}
+
+.reports-container .table tbody td {
+    color: #46536a;
+    font-size: 14px;
+    padding: 13px 12px;
+}
+
+.reports-container .table tbody tr:hover {
+    background: #f9fbff;
+}
+
+/* Buttons */
+.reports-container .btn {
+    border-radius: 7px;
+    font-weight: 600;
+}
+
+.reports-container .btn-primary {
+    background: #315da8;
+    border-color: #315da8;
+}
+
+.reports-container .btn-primary:hover {
+    background: #244b8c;
+    border-color: #244b8c;
+}
+
+/* Tablet */
+@media (max-width: 992px) {
+    .reports-container {
+        padding: 25px 20px;
+    }
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+    .reports-container {
+        margin-left: 0;
+        padding: 85px 15px 25px;
+    }
+
+    .reports-container h2 {
+        font-size: 24px;
+    }
+
+    .reports-container .card {
+        padding: 18px !important;
+    }
+
+    .report-card {
+        min-height: auto;
+    }
+
+    .report-card h3 {
+        font-size: 22px;
+    }
+
+    .reports-container .row>div {
+        width: 100%;
+    }
+}
+
+/* Small mobile */
+@media (max-width: 420px) {
+    .reports-container {
+        padding-left: 12px;
+        padding-right: 12px;
+    }
+
+    .reports-container .card {
+        padding: 15px !important;
+    }
+
+    .reports-container h2 {
+        font-size: 22px;
+    }
+
+    .report-card h3 {
+        font-size: 20px;
+    }
+}

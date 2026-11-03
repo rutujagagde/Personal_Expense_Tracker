@@ -1,0 +1,90 @@
+<!-- Mobile Menu Button -->
+<button class="mobile-menu-button" type="button" (click)="toggleMenu()" aria-label="Toggle navigation">
+
+    ☰
+
+</button>
+
+<!-- Mobile Overlay -->
+@if (menuOpen) {
+<div class="sidebar-overlay" (click)="closeMenu()"></div>
+}
+
+<!-- Sidebar -->
+<aside class="sidebar" [class.sidebar-open]="menuOpen">
+
+    <!-- Brand -->
+    <a routerLink="/dashboard" class="brand" (click)="closeMenu()">
+
+        <span class="brand-icon">S</span>
+
+        <span>SpendWise</span>
+
+    </a>
+
+    <!-- Main Menu -->
+    <div class="sidebar-menu">
+
+        <p class="menu-title">MAIN MENU</p>
+
+        <a routerLink="/dashboard" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }"
+            class="sidebar-link" (click)="closeMenu()">
+
+            <span class="menu-icon">▦</span>
+            <span>Dashboard</span>
+
+        </a>
+
+        <a [routerLink]="['/transactions', userId]" routerLinkActive="active" class="sidebar-link"
+            (click)="closeMenu()">
+
+            <span class="menu-icon">⇄</span>
+            <span>Transactions</span>
+
+        </a>
+
+        <a [routerLink]="['/transactions', userId]" routerLinkActive="active" class="sidebar-link"
+            (click)="closeMenu()">
+
+            <span class="menu-icon">↗</span>
+            <span>Income</span>
+
+        </a>
+
+        <a [routerLink]="['/transactions', userId]" routerLinkActive="active" class="sidebar-link"
+            (click)="closeMenu()">
+
+            <span class="menu-icon">↘</span>
+            <span>Expenses</span>
+
+        </a>
+
+        <a [routerLink]="['/reports', userId]" routerLinkActive="active" class="sidebar-link" (click)="closeMenu()">
+
+            <span class="menu-icon">▤</span>
+            <span>Reports</span>
+
+        </a>
+
+    </div>
+
+    <!-- Bottom Menu -->
+    <div class="sidebar-bottom">
+
+        <button type="button" class="sidebar-link profile-button" (click)="openProfile()">
+
+            <span class="menu-icon">♙</span>
+            <span>My Profile</span>
+
+        </button>
+
+        <button type="button" class="sidebar-link logout-button" (click)="logout()">
+
+            <span class="menu-icon">⇥</span>
+            <span>Logout</span>
+
+        </button>
+
+    </div>
+
+</aside>

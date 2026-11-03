@@ -18,8 +18,11 @@ public interface TransactionRepository
     // Get all transactions for a user
     List<Transaction> findByUserId(Long userId);
 
-    // Get income or expense transactions for a user
     List<Transaction> findByUserIdAndType(Long userId, String type);
+    List<Transaction> findByUser_IdAndType(
+            Long userId,
+            String type
+    );
 
     @Query("""
         SELECT t FROM Transaction t

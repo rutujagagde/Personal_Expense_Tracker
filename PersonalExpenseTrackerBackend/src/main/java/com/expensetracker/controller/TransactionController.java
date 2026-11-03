@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.expensetracker.dto.DashboardDTO;
+import com.expensetracker.dto.ReportDTO;
 import com.expensetracker.entity.Transaction;
 import com.expensetracker.service.TransactionService;
 
@@ -120,5 +121,22 @@ public class TransactionController {
             @PathVariable Long id) {
 
         return service.deleteTransaction(id, userId);
+    }
+    @GetMapping("/test-expense/{userId}")
+    @ResponseBody
+    public List<Transaction> testExpenseFilter(
+            @PathVariable Long userId) {
+        return service.testExpenseFilter(userId);
+    }
+    @GetMapping("/report/{userId}")
+    @ResponseBody
+    public ReportDTO getReportSummary(
+            @PathVariable Long userId,
+            @RequestParam(required = false) 
+            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
+            @RequestParam(required = false) 
+            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate) {
+
+        return service.getReportSummary(userId, startDate, endDate);
     }
 }

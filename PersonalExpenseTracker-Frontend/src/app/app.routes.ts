@@ -1,20 +1,24 @@
+
 import { Routes } from '@angular/router';
+
 import { Home } from './Component/home/home';
 import { Login } from './Component/login/login';
 import { Register } from './Component/register/register';
 import { Dashboard } from './Component/dashboard/dashboard';
 import { Transactions } from './Component/transactions/transactions';
+import { Reports } from './Component/reports/reports';
 
 export const routes: Routes = [
-    { path: '', component: Home },
-    { path: 'home', component: Home },
 
+    { path: '', component: Home },
+
+    { path: 'home', component: Home },
 
     {
         path: 'login',
-        component: Login,
-
+        component: Login
     },
+
     {
         path: 'register',
         component: Register,
@@ -24,17 +28,20 @@ export const routes: Routes = [
     {
         path: 'dashboard',
         component: Dashboard,
-        // canActivate: [authGuard],
         title: 'Dashboard — Expense Tracker'
     },
+
     {
         path: 'transactions/:userId',
         component: Transactions,
-        // canActivate: [authGuard],
         title: 'Transactions — Expense Tracker'
     },
 
-
+    {
+        path: 'reports/:userId',
+        component: Reports,
+        title: 'Reports — Expense Tracker'
+    },
 
     { path: '**', redirectTo: '' }
 

@@ -9,16 +9,19 @@ import { Observable } from 'rxjs';
 export class UserService {
 
     private apiUrl = 'http://localhost:8080/api/users';
-    userId: number = 0;
+    userId: number = Number(sessionStorage.getItem('spendwiseUserId') || 0);
 
     setUserId(id: number) {
         this.userId = id;
+        sessionStorage.setItem('spendwiseUserId', String(id));
     }
 
     getUserId(): number {
-        return this.userId;
+        return this.userId || Number(sessionStorage.getItem('spendwiseUserId') || 0);
     }
     constructor(private http: HttpClient) { }
+
+    logout() { this.userId = 0; sessionStorage.removeItem('spendwiseUserId'); }
 
     getAllUsers() {
         return this.http.get(this.apiUrl);
@@ -44,5 +47,9 @@ export class UserService {
             user
         );
 
+    }
+    // Update user profile
+    updateUser(id: number, user: any): Observable<any> {
+        return this.http.put(`${this.apiUrl}/${id}`, user);
     }
 }

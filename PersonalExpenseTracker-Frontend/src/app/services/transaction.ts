@@ -1,7 +1,6 @@
 
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
-
 import { Observable } from 'rxjs';
 
 export interface DashboardSummary {
@@ -11,11 +10,31 @@ export interface DashboardSummary {
     transactions: any[];
 }
 
+export interface ReportSummary {
+    totalIncome: number;
+    totalExpenses: number;
+    availableBalance: number;
+    categoryExpenses: { [category: string]: number };
+
+    monthlySummary: {
+        month: string;
+        totalIncome: number;
+        totalExpenses: number;
+    }[];
+
+    transactions: any[];
+}
+
 @Injectable({
     providedIn: 'root'
 })
 export class TransactionService {
+
     userId: number = 0;
+
+    private baseUrl = 'http://localhost:8080/api/transactions';
+
+    constructor(private http: HttpClient) { }
 
     setUserId(id: number) {
         this.userId = id;
@@ -24,10 +43,6 @@ export class TransactionService {
     getUserId(): number {
         return this.userId;
     }
-
-    private baseUrl = 'http://localhost:8080/api/transactions';
-
-    constructor(private http: HttpClient) { }
 
     // Add transaction
     addTransaction(userId: number, transaction: any) {
@@ -113,6 +128,29 @@ export class TransactionService {
 
         return this.http.get<DashboardSummary>(
             this.baseUrl + '/summary/' + userId,
+            { params }
+        );
+    }
+
+    // Get financial report with category and monthly summaries
+    getReportSummary(
+        userId: number,
+        startDate?: string,
+        endDate?: string
+    ): Observable<ReportSummary> {
+
+        let params = new HttpParams();
+
+        if (startDate) {
+            params = params.set('startDate', startDate);
+        }
+
+        if (endDate) {
+            params = params.set('endDate', endDate);
+        }
+
+        return this.http.get<ReportSummary>(
+            this.baseUrl + '/report/' + userId,
             { params }
         );
     }

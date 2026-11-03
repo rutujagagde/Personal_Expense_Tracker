@@ -10,10 +10,12 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.expensetracker.dto.UserProfileDTO;
 import com.expensetracker.entity.User;
 import com.expensetracker.service.UserService;
 
@@ -53,5 +55,21 @@ public class UserController {
 		User savedUser = userService.register(user);
 
 		return savedUser;
+	}
+	@PutMapping("/users/{id}")
+	public ResponseEntity<UserProfileDTO> updateUser(
+	        @PathVariable Long id,
+	        @RequestBody User updatedUser) {
+
+	    User user = userService.updateUser(id, updatedUser);
+
+	    UserProfileDTO response = new UserProfileDTO(
+	            user.getId(),
+	            user.getName(),
+	            user.getEmail(),
+	            user.getPassword()
+	    );
+
+	    return ResponseEntity.ok(response);
 	}
 }

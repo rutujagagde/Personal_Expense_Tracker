@@ -1,0 +1,286 @@
+<div class="reports-layout">
+
+    <!-- Shared Sidebar -->
+    <app-sidebar></app-sidebar>
+
+    <main class="reports-container">
+
+        <!-- Header -->
+        <div class="mb-4">
+            <h2 class="fw-bold">Financial Reports</h2>
+            <p class="text-secondary">
+                Analyze your income and expenses.
+            </p>
+        </div>
+
+        <!-- Error Message -->
+        @if (errorMessage) {
+        <div class="alert alert-danger">
+            {{ errorMessage }}
+        </div>
+        }
+
+        <!-- Date Filters -->
+        <section class="card border-0 shadow-sm rounded-4 p-4 mb-4">
+
+            <h5 class="fw-bold mb-3">Filter Report</h5>
+
+            <div class="row g-3">
+
+                <div class="col-md-5">
+                    <label for="startDate" class="form-label">From Date</label>
+                    <input type="date" id="startDate" class="form-control" [(ngModel)]="startDate">
+                </div>
+
+                <div class="col-md-5">
+                    <label for="endDate" class="form-label">To Date</label>
+                    <input type="date" id="endDate" class="form-control" [(ngModel)]="endDate">
+                </div>
+
+                <div class="col-md-2 d-flex align-items-end gap-2">
+                    <button type="button" class="btn btn-primary w-100" [disabled]="loading" (click)="applyFilters()">
+                        Apply
+                    </button>
+                </div>
+
+            </div>
+
+            <div class="mt-3">
+                <button type="button" class="btn btn-sm btn-outline-secondary" [disabled]="loading"
+                    (click)="clearFilters()">
+                    Reset Dates
+                </button>
+            </div>
+
+        </section>
+
+        <!-- Loading -->
+        @if (loading) {
+        <div class="text-center p-5">
+            <div class="spinner-border text-primary"></div>
+            <p class="mt-2 text-secondary">Loading report...</p>
+        </div>
+        }
+
+        @if (!loading) {
+
+        <!-- Summary Cards -->
+        <section class="row g-4 mb-4">
+
+            <div class="col-md-4">
+                <div class="card report-card income-card border-0 shadow-sm rounded-4 p-4">
+                    <p class="text-secondary mb-2">Total Income</p>
+                    <h3 class="fw-bold text-success">
+                        {{ totalIncome | currency:'INR':'symbol':'1.2-2' }}
+                    </h3>
+                    <small class="text-secondary">Total money received</small>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card report-card expense-card border-0 shadow-sm rounded-4 p-4">
+                    <p class="text-secondary mb-2">Total Expenses</p>
+                    <h3 class="fw-bold text-danger">
+                        {{ totalExpenses | currency:'INR':'symbol':'1.2-2' }}
+                    </h3>
+                    <small class="text-secondary">Total money spent</small>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card report-card balance-card border-0 shadow-sm rounded-4 p-4">
+                    <p class="text-secondary mb-2">Available Balance</p>
+                    <h3 class="fw-bold text-primary">
+                        {{ availableBalance | currency:'INR':'symbol':'1.2-2' }}
+                    </h3>
+                    <small class="text-secondary">Income minus expenses</small>
+                </div>
+            </div>
+
+        </section>
+
+        <!-- Category Wise Expenses -->
+        <section class="card border-0 shadow-sm rounded-4 p-4 mb-4">
+
+            <h5 class="fw-bold mb-3">Category-wise Expenses</h5>
+
+            @if ((categoryExpenses | keyvalue).length === 0) {
+
+            <p class="text-secondary">
+                No category-wise expense data available.
+            </p>
+
+            } @else {
+
+            @for (item of categoryExpenses | keyvalue; track item.key) {
+
+            <div class="mb-3">
+
+                <div class="d-flex justify-content-between mb-2">
+                    <span class="fw-semibold">{{ item.key }}</span>
+
+                    <span class="text-danger fw-semibold">
+                        {{ item.value | currency:'INR':'symbol':'1.2-2' }}
+                    </span>
+                </div>
+
+                <div class="progress" style="height: 10px;">
+                    <div class="progress-bar bg-primary" role="progressbar"
+                        [style.width.%]="getCategoryPercentage(item.value)">
+                    </div>
+                </div>
+
+            </div>
+
+            }
+
+            }
+
+        </section>
+
+        <!-- Monthly Overview -->
+        <section class="card border-0 shadow-sm rounded-4 p-4 mb-4">
+
+            <h5 class="fw-bold mb-3">Monthly Overview</h5>
+
+            @if (monthlySummary.length === 0) {
+
+            <p class="text-secondary">
+                Monthly report data is not available yet.
+            </p>
+
+            } @else {
+
+            <div class="table-responsive">
+
+                <table class="table table-hover align-middle">
+
+                    <thead class="table-light">
+                        <tr>
+                            <th>Month</th>
+                            <th>Income</th>
+                            <th>Expenses</th>
+                            <th>Balance</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+
+                        @for (month of monthlySummary; track $index) {
+
+                        <tr>
+                            <td>{{ month.month }}</td>
+
+                            <td class="text-success">
+                                {{ month.totalIncome | currency:'INR':'symbol':'1.2-2' }}
+                            </td>
+
+                            <td class="text-danger">
+                                {{ month.totalExpenses | currency:'INR':'symbol':'1.2-2' }}
+                            </td>
+
+                            <td class="fw-semibold">
+                                {{ (month.totalIncome - month.totalExpenses) | currency:'INR':'symbol':'1.2-2' }}
+                            </td>
+                        </tr>
+
+                        }
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+            }
+
+        </section>
+
+        <!-- Transaction History -->
+        <section class="card border-0 shadow-sm rounded-4 p-4 mb-4">
+
+            <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
+
+                <div>
+                    <h5 class="fw-bold mb-1">Transaction History</h5>
+                    <p class="text-secondary mb-0">
+                        Transactions included in this report.
+                    </p>
+                </div>
+
+                <button type="button" class="btn btn-outline-primary btn-sm" (click)="goToTransactions()">
+                    View All Transactions
+                </button>
+
+            </div>
+
+            @if (transactions.length === 0) {
+
+            <p class="text-secondary">
+                No transactions found for the selected period.
+            </p>
+
+            } @else {
+
+            <div class="table-responsive">
+
+                <table class="table table-hover align-middle">
+
+                    <thead class="table-light">
+                        <tr>
+                            <th>Date</th>
+                            <th>Type</th>
+                            <th>Category</th>
+                            <th>Description</th>
+                            <th>Amount</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+
+                        @for (transaction of transactions; track transaction.id) {
+
+                        <tr>
+
+                            <td>
+                                {{ transaction.transactionDate | date:'dd MMM yyyy' }}
+                            </td>
+
+                            <td>
+                                @if (transaction.type === 'INCOME') {
+                                <span class="badge bg-success">Income</span>
+                                } @else {
+                                <span class="badge bg-danger">Expense</span>
+                                }
+                            </td>
+
+                            <td>{{ transaction.category }}</td>
+
+                            <td>{{ transaction.description || '-' }}</td>
+
+                            <td class="fw-semibold" [class.text-success]="transaction.type === 'INCOME'"
+                                [class.text-danger]="transaction.type === 'EXPENSE'">
+
+                                {{ transaction.amount | currency:'INR':'symbol':'1.2-2' }}
+
+                            </td>
+
+                        </tr>
+
+                        }
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+            }
+
+        </section>
+
+        }
+
+    </main>
+
+</div>
