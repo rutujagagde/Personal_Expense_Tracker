@@ -6,10 +6,10 @@ SpendWise is a Personal Expense Tracker application that helps users manage thei
 
 ## Technologies Used
 
-- **Frontend:** Angular, HTML, CSS, Bootstrap
-- **Backend:** Java, Spring Boot, REST APIs
+- -**Frontend:** Angular, HTML, CSS, Bootstrap
+- **Backend:** Java, Spring Boot, RESTful APIs
 - **Database:** MySQL
-- **Database Tool:** DBeaver
+- **Database Management Tool:** MySQL Workbench
 - **Version Control:** Git and GitHub
 
 ## Main Features
