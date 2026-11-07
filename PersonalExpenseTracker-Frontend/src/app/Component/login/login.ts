@@ -10,6 +10,8 @@ import { CommonModule } from '@angular/common';
 import { Router, RouterLink } from '@angular/router';
 import { UserService } from '../../services/userservice';
 
+declare var Swal: any;
+
 @Component({
   selector: 'app-login',
   standalone: true,
@@ -68,6 +70,7 @@ export class Login {
     this.user_data.get('email')?.setValue(filteredValue);
   }
 
+  // Login
   loginSubmit() {
 
     this.errorMessage = '';
@@ -90,15 +93,53 @@ export class Login {
 
         this.loading = false;
 
-        if (response && response.id) {
+        // Get JWT tokens and user details
+        const accessToken = response?.accessToken;
+        const refreshToken = response?.refreshToken;
+        const userId = response?.user?.id;
 
-          this.userService.setUserId(response.id);
+        // Check login response
+        if (
+          accessToken &&
+          refreshToken &&
+          userId !== undefined &&
+          userId !== null &&
+          Number(userId) > 0
+        ) {
 
-          this.router.navigate(['/dashboard']);
+          // Store JWT access token
+          localStorage.setItem('accessToken', accessToken);
+
+          // Store refresh token
+          localStorage.setItem('refreshToken', refreshToken);
+
+          // Store logged-in user ID
+          this.userService.setUserId(Number(userId));
+
+          // Success alert
+          Swal.fire({
+            icon: 'success',
+            title: 'Login Successful!',
+            text: 'Welcome to SpendWise.',
+            confirmButtonText: 'Continue',
+            allowOutsideClick: false
+          }).then(() => {
+
+            this.router.navigate(['/dashboard']);
+
+          });
 
         } else {
 
-          this.errorMessage = 'Invalid email or password.';
+          this.errorMessage =
+            'Invalid login response. User ID or JWT token is missing.';
+
+          Swal.fire({
+            icon: 'error',
+            title: 'Login Failed',
+            text: this.errorMessage,
+            confirmButtonText: 'OK'
+          });
 
         }
       },
@@ -110,6 +151,14 @@ export class Login {
         this.errorMessage =
           error.error?.message ||
           'Invalid email or password. Please try again.';
+
+        // Error alert
+        Swal.fire({
+          icon: 'error',
+          title: 'Login Failed',
+          text: this.errorMessage,
+          confirmButtonText: 'OK'
+        });
 
       }
 

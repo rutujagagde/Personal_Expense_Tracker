@@ -10,6 +10,8 @@ import { CommonModule } from '@angular/common';
 import { Router, RouterLink } from '@angular/router';
 import { UserService } from '../../services/userservice';
 
+declare var Swal: any;
+
 @Component({
   selector: 'app-register',
   standalone: true,
@@ -127,9 +129,16 @@ export class Register {
 
         this.user.reset();
 
-        setTimeout(() => {
+        Swal.fire({
+          icon: 'success',
+          title: 'Registration Successful!',
+          text: 'Your account has been created. Please login.',
+          confirmButtonText: 'Go to Login'
+        }).then(() => {
+
           this.router.navigate(['/login']);
-        }, 1500);
+
+        });
 
       },
 
@@ -141,6 +150,12 @@ export class Register {
           error.error?.message ||
           error.error ||
           'Registration failed. Please try again.';
+
+        Swal.fire({
+          icon: 'error',
+          title: 'Registration Failed',
+          text: this.errorMessage
+        });
 
       }
 

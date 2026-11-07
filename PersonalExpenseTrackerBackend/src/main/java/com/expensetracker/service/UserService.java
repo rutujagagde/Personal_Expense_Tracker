@@ -1,82 +1,146 @@
-
 package com.expensetracker.service;
 
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.HttpStatus;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.server.ResponseStatusException;
 
-import com.expensetracker.dto.UserProfileDTO;
 import com.expensetracker.entity.User;
 import com.expensetracker.repository.UserRepository;
 
 @Service
 public class UserService {
 
-	@Autowired
-	private UserRepository userRepository;
+    private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
-	public List<User> getAllUsers() {
-		return userRepository.findAll();
-	}
+    public UserService(
+            UserRepository userRepository,
+            PasswordEncoder passwordEncoder) {
 
-	public User getUserById(Long id) {
-		return userRepository.findById(id).orElse(null);
-	}
+        this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
+    }
 
-	public User saveUser(User user) {
-		return userRepository.save(user);
-	}
+    public List<User> getAllUsers() {
+        return userRepository.findAll();
+    }
 
-	public void deleteUser(Long id) {
-		userRepository.deleteById(id);
-	}
+    public User getUserById(Long id) {
+        return userRepository.findById(id).orElse(null);
+    }
 
-	public User login(String email, String password) {
+    public User saveUser(User user) {
+        return userRepository.save(user);
+    }
 
-		Optional<User> result = userRepository.findByEmail(email);
+    public void deleteUser(Long id) {
+        userRepository.deleteById(id);
+    }
 
-		if (result.isPresent()) {
+    // Login using BCrypt
+    public User login(String email, String password) {
 
-			User user = result.get();
+        Optional<User> result =
+                userRepository.findByEmail(email);
 
-			if (user.getPassword().equals(password)) {
-				return user;
-			}
-		}
+        if (result.isEmpty()) {
+            return null;
+        }
 
-		return null;
-	}
+        User user = result.get();
 
-	public User register(User user) {
-		user.setCreatedAt(LocalDateTime.now());
-		if (userRepository.existsByEmail(user.getEmail())) {
-			throw new RuntimeException("Email already registered");
-		}
+        String storedPassword = user.getPassword();
 
-		return userRepository.save(user);
-	}
+        if (storedPassword == null || password == null) {
+            return null;
+        }
 
-	public User updateUser(Long id, User updatedUser) {
+        // Check BCrypt password first
+        if (passwordEncoder.matches(password, storedPassword)) {
+            return user;
+        }
 
-	    User existingUser = userRepository.findById(id)
-	            .orElseThrow(() -> new RuntimeException("User not found"));
+        // Migrate existing plain-text passwords
+        // after a successful legacy login
+        if (storedPassword.equals(password)) {
 
-	    Optional<User> emailUser =
-	            userRepository.findByEmail(updatedUser.getEmail());
+            user.setPassword(
+                    passwordEncoder.encode(password)
+            );
 
-	  
-	    existingUser.setName(updatedUser.getName());
-	    existingUser.setEmail(updatedUser.getEmail());
-	    existingUser.setPassword(updatedUser.getPassword());
+            userRepository.save(user);
 
-	    return userRepository.save(existingUser);
-	}
+            return user;
+        }
 
-	
+        return null;
+    }
+
+    // Registration
+    public User register(User user) {
+
+        if (userRepository.existsByEmail(user.getEmail())) {
+
+            throw new ResponseStatusException(
+                    HttpStatus.CONFLICT,
+                    "Email already registered"
+            );
+        }
+
+        user.setPassword(
+                passwordEncoder.encode(user.getPassword())
+        );
+
+        user.setCreatedAt(LocalDateTime.now());
+
+        return userRepository.save(user);
+    }
+
+    // Update user profile
+    public User updateUser(Long id, User updatedUser) {
+
+        User existingUser = userRepository.findById(id)
+                .orElseThrow(() ->
+                        new ResponseStatusException(
+                                HttpStatus.NOT_FOUND,
+                                "User not found"
+                        )
+                );
+
+        Optional<User> emailUser =
+                userRepository.findByEmail(
+                        updatedUser.getEmail()
+                );
+
+        if (emailUser.isPresent()
+                && emailUser.get().getId() != id) {
+
+            throw new ResponseStatusException(
+                    HttpStatus.CONFLICT,
+                    "Email already registered"
+            );
+        }
+
+        existingUser.setName(updatedUser.getName());
+        existingUser.setEmail(updatedUser.getEmail());
+
+        // Do not replace password if profile request
+        // does not contain a new password
+        if (updatedUser.getPassword() != null
+                && !updatedUser.getPassword().isBlank()) {
+
+            existingUser.setPassword(
+                    passwordEncoder.encode(
+                            updatedUser.getPassword()
+                    )
+            );
+        }
+
+        return userRepository.save(existingUser);
+    }
 }

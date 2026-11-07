@@ -1,6 +1,9 @@
+
 import { Component, EventEmitter, Output } from '@angular/core';
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { UserService } from '../../services/userservice';
+
+declare var Swal: any;
 
 @Component({
   selector: 'app-sidebar',
@@ -38,19 +41,40 @@ export class Sidebar {
 
   logout() {
 
-    const confirmed = window.confirm(
-      'Are you sure you want to logout?'
-    );
+    Swal.fire({
+      title: 'Are you sure?',
+      text: 'Do you really want to logout?',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes, logout',
+      cancelButtonText: 'Cancel'
+    }).then((result: any) => {
 
-    if (confirmed) {
+      if (result.isConfirmed) {
 
-      this.userService.setUserId(0);
+        // Remove JWT token
+        localStorage.removeItem('accessToken');
 
-      // Authentication token cleanup will be integrated
-      // when we implement the JWT authentication service.
+        // Clear user ID
+        this.userService.setUserId(0);
 
-      this.router.navigate(['/login']);
-    }
+        this.router.navigate(['/login']).then(() => {
+
+          Swal.fire({
+            icon: 'success',
+            title: 'Logged Out!',
+            text: 'You have successfully logged out.',
+            timer: 1500,
+            showConfirmButton: false
+          });
+
+        });
+
+      }
+
+    });
 
   }
 

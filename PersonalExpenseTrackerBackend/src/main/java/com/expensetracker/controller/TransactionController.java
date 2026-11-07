@@ -25,7 +25,6 @@ import com.expensetracker.service.TransactionService;
 
 @Controller
 @RequestMapping("/api/transactions")
-@CrossOrigin(origins = "http://localhost:4200")
 public class TransactionController {
 
     @Autowired

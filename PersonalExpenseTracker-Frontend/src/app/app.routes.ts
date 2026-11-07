@@ -7,6 +7,7 @@ import { Register } from './Component/register/register';
 import { Dashboard } from './Component/dashboard/dashboard';
 import { Transactions } from './Component/transactions/transactions';
 import { Reports } from './Component/reports/reports';
+import { authGuard } from './services/auth.guard';
 
 export const routes: Routes = [
 
@@ -28,19 +29,22 @@ export const routes: Routes = [
     {
         path: 'dashboard',
         component: Dashboard,
-        title: 'Dashboard — Expense Tracker'
+        title: 'Dashboard — Expense Tracker',
+        canActivate: [authGuard]
     },
 
     {
         path: 'transactions/:userId',
         component: Transactions,
-        title: 'Transactions — Expense Tracker'
+        title: 'Transactions — Expense Tracker',
+        canActivate: [authGuard]
     },
 
     {
         path: 'reports/:userId',
         component: Reports,
-        title: 'Reports — Expense Tracker'
+        title: 'Reports — Expense Tracker',
+        canActivate: [authGuard]
     },
 
     { path: '**', redirectTo: '' }

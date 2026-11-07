@@ -1,19 +1,9 @@
 package com.expensetracker.controller;
 
 import java.util.List;
-import java.util.Map;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.*;
 
 import com.expensetracker.dto.UserProfileDTO;
 import com.expensetracker.entity.User;
@@ -21,55 +11,64 @@ import com.expensetracker.service.UserService;
 
 @RestController
 @RequestMapping("/api")
-@CrossOrigin(origins = "http://localhost:4200")
 public class UserController {
 
-	@Autowired
-	private UserService userService;
+    private final UserService userService;
 
-	@GetMapping("/users")
-	public List<User> getAllUsers() {
-		return userService.getAllUsers();
-	}
+    public UserController(UserService userService) {
+        this.userService = userService;
+    }
 
-	@GetMapping("/users/{id}")
-	public User getUserById(@PathVariable Long id) {
-		return userService.getUserById(id);
-	}
+    @GetMapping("/users")
+    @PreAuthorize(
+    	    "@userAccessService.isOwner(#p0, authentication.name)"
+    	)
+    public List<UserProfileDTO> getAllUsers() {
 
-	@PostMapping("/login")
-	public User login(@RequestBody User loginUser) {
-		System.out.println("Received user: " + loginUser.getEmail());
+        return userService.getAllUsers()
+                .stream()
+                .map(user -> new UserProfileDTO(
+                        user.getId(),
+                        user.getName(),
+                        user.getEmail()
+                ))
+                .toList();
+    }
 
-		User user = userService.login(loginUser.getEmail(), loginUser.getPassword());
-		return user;
+    @GetMapping("/users/{id}")
+    @PreAuthorize(
+            "@userAccessService.isOwner(#p0, authentication.name)"
+    )
+    public UserProfileDTO getUserById(
+            @PathVariable Long id) {
 
-	}
+        User user = userService.getUserById(id);
 
+        if (user == null) {
+            return null;
+        }
 
-	@PostMapping("/register")
-	public User register(@RequestBody User user) {
+        return new UserProfileDTO(
+                user.getId(),
+                user.getName(),
+                user.getEmail()
+        );
+    }
 
-		System.out.println("Received user: " + user.getEmail());
+    @PutMapping("/users/{id}")
+    @PreAuthorize(
+            "@userAccessService.isOwner(#p0, authentication.name)"
+    )
+    public UserProfileDTO updateUser(
+            @PathVariable Long id,
+            @RequestBody User updatedUser) {
 
-		User savedUser = userService.register(user);
+        User user = userService.updateUser(id, updatedUser);
 
-		return savedUser;
-	}
-	@PutMapping("/users/{id}")
-	public ResponseEntity<UserProfileDTO> updateUser(
-	        @PathVariable Long id,
-	        @RequestBody User updatedUser) {
-
-	    User user = userService.updateUser(id, updatedUser);
-
-	    UserProfileDTO response = new UserProfileDTO(
-	            user.getId(),
-	            user.getName(),
-	            user.getEmail(),
-	            user.getPassword()
-	    );
-
-	    return ResponseEntity.ok(response);
-	}
+        return new UserProfileDTO(
+                user.getId(),
+                user.getName(),
+                user.getEmail()
+        );
+    }
 }
