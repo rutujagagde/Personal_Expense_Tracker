@@ -32,7 +32,7 @@ export class TransactionService {
 
     userId: number = 0;
 
-    private baseUrl = 'http://localhost:8080/api/transactions';
+    private baseUrl = 'https://personal-expense-tracker-backend-oek7.onrender.com/api/transactions';
 
     constructor(private http: HttpClient) { }
 

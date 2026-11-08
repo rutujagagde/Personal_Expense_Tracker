@@ -1,14 +1,16 @@
+
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-
 
 @Injectable({
     providedIn: 'root'
 })
 export class UserService {
 
-    private apiUrl = 'http://localhost:8080/api/users';
+    private apiUrl = 'https://personal-expense-tracker-backend-oek7.onrender.com/api/users';
+    private baseUrl = 'https://personal-expense-tracker-backend-oek7.onrender.com/api';
+
     userId: number = Number(sessionStorage.getItem('spendwiseUserId') || 0);
 
     setUserId(id: number) {
@@ -19,9 +21,13 @@ export class UserService {
     getUserId(): number {
         return this.userId || Number(sessionStorage.getItem('spendwiseUserId') || 0);
     }
+
     constructor(private http: HttpClient) { }
 
-    logout() { this.userId = 0; sessionStorage.removeItem('spendwiseUserId'); }
+    logout() {
+        this.userId = 0;
+        sessionStorage.removeItem('spendwiseUserId');
+    }
 
     getAllUsers() {
         return this.http.get(this.apiUrl);
@@ -34,20 +40,21 @@ export class UserService {
     getMessage() {
         return 'Welcome to SpendWise!';
     }
+
     login(user: any) {
         return this.http.post<any>(
-            'http://localhost:8080/api/login',
+            `${this.baseUrl}/login`,
             user
         );
     }
+
     register(user: any): Observable<any> {
-
         return this.http.post<any>(
-            'http://localhost:8080/api/register',
+            `${this.baseUrl}/register`,
             user
         );
-
     }
+
     // Update user profile
     updateUser(id: number, user: any): Observable<any> {
         return this.http.put(`${this.apiUrl}/${id}`, user);
