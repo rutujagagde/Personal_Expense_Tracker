@@ -25,7 +25,10 @@ public class JwtAuthenticationFilter
     public JwtAuthenticationFilter(JwtService jwtService) {
         this.jwtService = jwtService;
     }
-
+    @Override
+    protected boolean shouldNotFilter(HttpServletRequest request) {
+        return "OPTIONS".equalsIgnoreCase(request.getMethod());
+    }
     @Override
     protected void doFilterInternal(
             HttpServletRequest request,
